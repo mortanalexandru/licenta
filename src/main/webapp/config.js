@@ -14,11 +14,16 @@ System.config({
   },
 
   map: {
+    "angular": "github:angular/bower-angular@1.5.0",
+    "angular-ui-router": "github:angular-ui/ui-router@0.2.18",
     "babel": "npm:babel-core@5.8.35",
     "babel-runtime": "npm:babel-runtime@5.8.35",
     "core-js": "npm:core-js@1.2.6",
     "gulp-cssnano": "npm:gulp-cssnano@2.1.1",
     "gulp-less": "npm:gulp-less@3.0.5",
+    "github:angular-ui/ui-router@0.2.18": {
+      "angular": "github:angular/bower-angular@1.5.0"
+    },
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },
