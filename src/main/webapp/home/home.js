@@ -1,9 +1,8 @@
-import {Component} from '/ngDecorators';
-
+import {Component} from '../ngDecorators';
 import template from './home.html!text';
 
 @Component({
-    selector: '.home',
+    selector: 'home',
     template: template })
 class Home {
     constructor() {

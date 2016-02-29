@@ -2,21 +2,32 @@ import angular from 'angular';
 import "angular-ui-router";
 
 
-const app = angular.module('web', []);
+const app = angular.module('web', ['ui.router']);
 
-app.config(["$stateProvider", "$urlRouterProvider"],function($stateProvider, $urlRouterProvider) {
+app.config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
 
-        $urlRouterProvider.otherwise('/home');
+    $urlRouterProvider.otherwise('/home');
 
-        $stateProvider
-            .state('home', {
-                url: "/home",
-                template: '<div class="home"></div>'
-            })
+    $stateProvider
+        .state('home', {
+            url: "/home",
+            template: '<home></home>'
+        });
+
+    $stateProvider
+        .state('login', {
+            url: "/login",
+            template: '<login></login>'
+        });
+
+    $stateProvider
+        .state('callPage', {
+            url: "/callPage",
+            template: '<videochat></videochat><textChat></textChat>'
+        });
 
 
-
-});
+}]);
 
 
 export default app;

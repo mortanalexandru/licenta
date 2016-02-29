@@ -22,7 +22,7 @@ public class MainController {
 	 */
     @RequestMapping(value = UrlMappings.BASE, method = RequestMethod.GET)
     public String getLandingPage(final Model model) {
-        return "/home";
+        return "/index";
     }
 
     /**
@@ -31,7 +31,7 @@ public class MainController {
      */
     @RequestMapping(value = UrlMappings.LANDING, method = RequestMethod.GET)
     public String getLoginPage(final Model model) {
-        return "/home";
+        return "/index";
     }
     
 }

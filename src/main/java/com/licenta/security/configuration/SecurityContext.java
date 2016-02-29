@@ -75,7 +75,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
         http.formLogin()
             .loginPage(UrlMappings.LANDING)
             .failureUrl(UrlMappings.LANDING + "?error")
-            .loginProcessingUrl(UrlMappings.LANDING)
+            .loginProcessingUrl("/login")
             .and()
             .authorizeRequests()
             .antMatchers(UrlMappings.LANDING,PUBLIC_RESOURCES_PATH,THIRD_PARTY_RESOURCES_PATH,UrlMappings.SOCIAL_URLS).permitAll()

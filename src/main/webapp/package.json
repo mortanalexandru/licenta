@@ -2,7 +2,13 @@
   "jspm": {
     "dependencies": {
       "angular": "github:angular/bower-angular@^1.5.0",
-      "angular-ui-router": "github:angular-ui/ui-router@^0.2.18"
+      "angular-ui-router": "github:angular-ui/ui-router@^0.2.18",
+      "babel-polyfill": "npm:babel-polyfill@^6.6.0",
+      "sockjs-client": "npm:sockjs-client@^1.0.3",
+      "stompjs": "npm:stompjs@^2.3.3",
+      "text": "github:systemjs/plugin-text@^0.0.7",
+      "underscore": "npm:underscore@^1.8.3",
+      "webrtc-adapter": "npm:webrtc-adapter@^1.0.2"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
@@ -12,7 +18,7 @@
   },
   "devDependencies": {
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
+    "gulp-babel": "^5.x.x",
     "gulp-cssnano": "^2.1.1",
     "gulp-less": "^3.0.5",
     "lite-server": "^2.1.0"
