@@ -11,7 +11,7 @@ class SocketService {
     constructor() {
         this.socket = new Socket('/chat');
         this.stompClient = Stomp.over(this.socket);
-        this.stompClient.connect({}, function (frame) {
+        this.stompClient.connect({userId : "alex"}, function (frame) {
             console.log("connected");
         });
     }
@@ -19,6 +19,7 @@ class SocketService {
     send(object) {
         this.stompClient.send("/app/chat", {}, JSON.stringify(object));
     }
+
 
 
 }

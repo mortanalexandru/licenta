@@ -24,7 +24,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 
 /**
@@ -72,7 +74,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
+        /*http.formLogin()
             .loginPage(UrlMappings.LANDING)
             .failureUrl(UrlMappings.LANDING + "?error")
             .loginProcessingUrl("/login")
@@ -86,9 +88,19 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
             .logoutSuccessUrl(UrlMappings.LANDING)
             .and()
             .csrf();
+            */
+        http.httpBasic().and()
+                .authorizeRequests()
+                .antMatchers("/index.html", "/").permitAll().anyRequest()
+                .permitAll().and().csrf().csrfTokenRepository(csrfTokenRepository()).and()
+                .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
     }
 
-
+    private CsrfTokenRepository csrfTokenRepository() {
+        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+        repository.setHeaderName("X-XSRF-TOKEN");
+        return repository;
+    }
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {

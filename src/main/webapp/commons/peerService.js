@@ -20,5 +20,9 @@ class PeerService {
 
     }
 
+    call(){
+
+    }
+
 }
 export default PeerService.instance;
