@@ -17,6 +17,7 @@ System.config({
 
   map: {
     "angular": "github:angular/bower-angular@1.5.0",
+    "angular-local-storage": "npm:angular-local-storage@0.2.7",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.18",
     "babel": "npm:babel-core@5.8.35",
     "babel-polyfill": "npm:babel-polyfill@6.6.0",

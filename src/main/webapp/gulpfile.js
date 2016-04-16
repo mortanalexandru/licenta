@@ -36,3 +36,6 @@ gulp.task('browser-sync', function() {
         proxy: "localhost:8080"
     });
 });
+
+
+// integrate maven gulp

@@ -1,57 +1,42 @@
-import {Component, Inject} from '../ngDecorators';
+import {Component, Inject, Secured} from '../ngDecorators';
 import template from './videoChat.html!text';
 import peerService from '/commons/peerService';
 import {window, sce} from "commons/externalServices";
 import socketService from '/commons/socketService';
 import authService from '/commons/authService';
+import SecuredComponent from '/commons/securedComponent';
 
 @Component({
     selector: 'videochat',
-    template: template })
-@Inject('$scope')
-class VideoChat {
-    constructor($scope) {
+    template: template
+})
+@Inject('$scope', '$stateParams')
+class VideoChat extends SecuredComponent{
+
+    constructor($scope, $stateParams) {
+        super();
         this.scope = $scope;
+        this.stateParams = $stateParams;
         this.message = 'This is my homepage';
         peerService().getUserMedia().then(this.handleStream.bind(this));
+        peerService().connect(this.handleRemoteStream.bind(this));
     }
 
-    handleStream(stream){
+    handleStream(stream) {
         this.localStreamObject = stream;
+        peerService().setLocalStream(stream);
         this.scope.localStream = sce().trustAsResourceUrl(window().URL.createObjectURL(stream));
         this.scope.$apply();
-        this.call();
     }
 
-    call(){
-        this.peer = new RTCPeerConnection(null);
-        this.peer.onicecandidate = this.iceCallback;
-        this.peer.createOffer(this.gotDescription1.bind(this), this.handleError);
+    handleRemoteStream(e) {
+        this.scope.remoteStream = sce().trustAsResourceUrl(window().URL.createObjectURL(e.stream));
+        this.scope.$apply();
     }
 
-
-    handleError(errmsg) {
-        console.log(errmsg);
+    call() {
+        peerService().call(this.stateParams.destUsername);
     }
-
-    iceCallback(event){
-        console.log("in function iceCallback1()");
-        if (event.candidate) {
-            this.peer.addIceCandidate(new RTCIceCandidate(event.candidate));
-        }
-    }
-
-    gotDescription1(desc){
-        console.log("creating SDP offer");
-        this.peer.setLocalDescription(desc);
-        var v=desc.sdp.split("\n");
-        var sdp="";
-        for(let i=0; i<v.length-1; i++) {
-         sdp += v[i] + "--***--";
-        }
-        console.log(sdp);
-        socketService().send({id:authService().getUsername(),sdpDescription:sdp});
-}
 
 }
 

@@ -22,10 +22,23 @@ app.config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $u
 
     $stateProvider
         .state('callPage', {
-            url: "/callPage",
+            url: "/callPage/:destUsername",
             template: '<videochat></videochat><textChat></textChat>'
         });
 
+
+    $stateProvider
+        .state('search', {
+            url: "/search",
+            template: '<search></search>'
+        });
+
+    $stateProvider
+        .state('room', {
+            url: "/room/:roomName",
+            template: '<chatroom></chatroom>'
+        });
+    //ui router component
 
 }]);
 

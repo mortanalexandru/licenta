@@ -5,15 +5,28 @@ package com.licenta.model;
  */
 public class WebrtcSdp {
 
-    private Integer id;
+    private String id;
 
     private String sdpDescription;
 
-    public Integer getId() {
+    private String destUsername;
+
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -25,4 +38,11 @@ public class WebrtcSdp {
         this.sdpDescription = sdpDescription;
     }
 
+    public String getDestUsername() {
+        return destUsername;
+    }
+
+    public void setDestUsername(String destUsername) {
+        this.destUsername = destUsername;
+    }
 }

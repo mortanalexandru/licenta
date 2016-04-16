@@ -1,5 +1,5 @@
 import {Service} from "/ngDecorators"
-import {http} from "./externalServices"
+import {http, q} from "./externalServices"
 import User from "/commons/model/user";
 
 
@@ -13,22 +13,28 @@ class AuthService {
     }
 
     login(username, password) {
-        http().get('/user',
-            {
-                'username': username,
-                'password': password
-            }).then(() => {
-            this.loginError = false;
-            this.authenticated = true;
-            this.currentUser.setCredentials(username, password);
-        }, () => {
-            this.loginError = true;
-            console.log("fail");
-        })
-    }
+        return q()(function (resolve) {
+            http().get('/user',
+                {
+                    headers: {authorization: "Basic " + btoa(username + ":" + password)}
+                }).then(() => {
+                this.loginError = false;
+                this.authenticated = true;
+                this.currentUser.setCredentials(username, password);
+                resolve();
+            }, () => {
+                this.loginError = true;
+                console.log("fail");
+            })
+        }.bind(this));
+    };
 
-    getUsername(){
+    isAuthenticated() {
+        return this.authenticated;
+    };
+
+    getUsername() {
         return this.currentUser.username;
-    }
+    };
 }
 export default AuthService.instance;

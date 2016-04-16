@@ -1,4 +1,6 @@
 import app from './appConfig';
+import {state} from "commons/externalServices";
+
 function Component(description = {}) {
     return function decorator(target) {
         if (!description.selector) {
@@ -51,5 +53,8 @@ function Service(options) {
         target.instance = () => _services[options.serviceName];
     };
 }
+
+//secure decorator, extend secure constructor (check more redirects)
+
 
 export {Component, Inject, Service};

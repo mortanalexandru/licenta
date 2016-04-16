@@ -1,0 +1,20 @@
+<div>
+    <h1>{{roomName}}</h1>
+</div>
+
+<div>
+    <!--<video ng-src="{{localStream}}" autoplay></video>-->
+    <!--<video ng-src="{{remoteStream}}" autoplay></video>-->
+
+
+    <div xmlns:ng="http://www.w3.org/1999/xhtml">
+        <ul>
+            <li ng:repeat="stream in streams">
+                <div>
+                    <video ng-src="{{stream}}" autoplay></video>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</div>

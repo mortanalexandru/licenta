@@ -14,11 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.licenta.model.User;
 
-/**
- * {@inheritDoc}
- * @author Alexandru, Norbert, Delia
- *
- */
+
 public class UserDAOImpl implements UserDAO {
 
 	@Autowired

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -13,35 +14,98 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class UserOnlineService {
 
-    private Map<Integer, List<String>> userConnections = new ConcurrentHashMap<Integer, List<String>>();
+    private Map<String, List<String>> userConnections = new ConcurrentHashMap<String, List<String>>();
 
-    public void addUserConnection(final Integer userId, final String sessionId) {
+    private Map<String, List<String>> userRoomConnections = new ConcurrentHashMap<String, List<String>>();
+
+
+    public void addUserConnection(final String username, final String sessionId) {
         List<String> activeSessions;
-        if (!userConnections.containsKey(userId)) {
+        if (!userConnections.containsKey(username)) {
             activeSessions = new ArrayList<String>();
             activeSessions.add(sessionId);
-            userConnections.put(userId, activeSessions);
+            userConnections.put(username, activeSessions);
         } else {
-            activeSessions = userConnections.get(userId);
+            activeSessions = userConnections.get(username);
             if (!activeSessions.contains(sessionId)) {
                 activeSessions.add(sessionId);
-                userConnections.replace(userId, activeSessions);
+                userConnections.replace(username, activeSessions);
             }
         }
     }
 
-    public void removeUserConnection(final Integer userId, final String sessionId) {
-        if (userConnections.containsKey(userId)) {
-            List<String> activeSessions = userConnections.get(userId);
+    public void addRoomParticipant(final String room, final String username) {
+        List<String> users;
+        if (!userRoomConnections.containsKey(room)) {
+            users = new ArrayList<String>();
+            users.add(username);
+            userRoomConnections.put(room, users);
+        } else {
+            users = userRoomConnections.get(username);
+            if (!users.contains(username)) {
+                users.add(username);
+                userRoomConnections.replace(username, users);
+            }
+        }
+    }
+
+    public void removeRoomParticipant(final String username, final String sessionId) {
+        if (userRoomConnections.containsKey(username)) {
+            List<String> users = userRoomConnections.get(username);
+            if (users.contains(sessionId)) {
+                users.remove(sessionId);
+            }
+            if (!users.isEmpty()) {
+                userRoomConnections.replace(username, users);
+            }else{
+                userRoomConnections.remove(username);
+            }
+        }
+    }
+
+    public List<String> getRoomUsers(final String roomName){
+        List<String> users;
+        if (!userRoomConnections.containsKey(roomName)) {
+            return new ArrayList<String>();
+        }else{
+            return userRoomConnections.get(roomName);
+        }
+    }
+
+
+
+
+
+    public boolean isUserOnline(final String username){
+        return userConnections.containsKey(username);
+    }
+
+    public boolean isSessionRegistered(final String username, final String sessionId){
+        if(userConnections.containsKey(username)){
+            List<String> activeSessions = userConnections.get(username);
+            if (activeSessions.contains(sessionId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeUserConnection(final String username, final String sessionId) {
+        if (userConnections.containsKey(username)) {
+            List<String> activeSessions = userConnections.get(username);
             if (activeSessions.contains(sessionId)) {
                 activeSessions.remove(sessionId);
             }
             if (!activeSessions.isEmpty()) {
-                userConnections.replace(userId, activeSessions);
+                userConnections.replace(username, activeSessions);
             }else{
-                userConnections.remove(userId);
+                userConnections.remove(username);
             }
         }
+    }
+
+    public Set<String> getOnlineUsernames(){
+        return userConnections.keySet();
     }
 
 

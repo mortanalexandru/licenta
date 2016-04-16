@@ -91,8 +91,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
             */
         http.httpBasic().and()
                 .authorizeRequests()
-                .antMatchers("/index.html", "/").permitAll().anyRequest()
-                .permitAll().and().csrf().csrfTokenRepository(csrfTokenRepository()).and()
+                .antMatchers("/index.html", "/").permitAll()
+                .antMatchers("/chat").authenticated().and().csrf().csrfTokenRepository(csrfTokenRepository()).and()
                 .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
     }
 
