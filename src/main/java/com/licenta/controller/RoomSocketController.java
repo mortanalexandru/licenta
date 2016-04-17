@@ -1,6 +1,7 @@
 package com.licenta.controller;
 
 import com.licenta.model.*;
+import com.licenta.service.UserOnlineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,16 +23,17 @@ public class RoomSocketController {
     private Map<String, Room> rooms = new ConcurrentHashMap<String, Room>();
 
 
+    @Autowired
+    private UserOnlineService userOnlineService;
+
     @MessageMapping("/chat/handshake")
-    public boolean processSdp(WebrtcSdpRoom sdp) {
+    public void processSdp(WebrtcSdpRoom sdp) {
         template.convertAndSend("/message/"+sdp.getDestUsername(), sdp);
-        return true;
     }
 
     @MessageMapping("/chat/ice")
-    public boolean processIceCandidates(WebrtcIce ice) {
+    public void processIceCandidates(WebrtcIce ice) {
         template.convertAndSend("/message/"+ice.getDestUsername(), ice);
-        return true;
     }
 
 
@@ -46,7 +48,7 @@ public class RoomSocketController {
             room = new Room();
             rooms.put(request.getRoom(), room);
         }
-        if(room.getParticipants().isEmpty() || isOnlyParticipant(room, request.getUsername())){
+        if(room.getParticipants().isEmpty() || isOnlyOnlineParticipant(room, request.getUsername())){
             response.setHost(true);
         }
         if (!room.getParticipants().contains(request.getUsername())){
@@ -59,8 +61,13 @@ public class RoomSocketController {
 
 
 
-    private boolean isOnlyParticipant(final Room room, final String username){
-        return room.getParticipants().size() == 1 && room.containsParticipant(username);
+    private boolean isOnlyOnlineParticipant(final Room room, final String username){
+        for(String user: room.getParticipants()){
+            if(userOnlineService.isUserOnline(user) && !user.equals(username)){
+                return false;
+            }
+        }
+        return true ;
     }
 
 

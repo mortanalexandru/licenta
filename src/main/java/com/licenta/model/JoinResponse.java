@@ -9,7 +9,7 @@ public class JoinResponse {
 
     private String username;
 
-    private boolean isHost;
+    private boolean host;
 
     public String getUsername() {
         return username;
@@ -20,11 +20,11 @@ public class JoinResponse {
     }
 
     public boolean isHost() {
-        return isHost;
+        return host;
     }
 
     public void setHost(boolean host) {
-        isHost = host;
+        this.host = host;
     }
 
     public String getType() {

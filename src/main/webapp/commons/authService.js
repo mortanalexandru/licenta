@@ -1,7 +1,7 @@
 import {Service} from "/ngDecorators"
 import {http, q} from "./externalServices"
 import User from "/commons/model/user";
-
+import storageService from '/commons/storageService';
 
 @Service({serviceName: 'authService'})
 class AuthService {
@@ -21,6 +21,7 @@ class AuthService {
                 this.loginError = false;
                 this.authenticated = true;
                 this.currentUser.setCredentials(username, password);
+                storageService().save("username", username);
                 resolve();
             }, () => {
                 this.loginError = true;
@@ -34,6 +35,9 @@ class AuthService {
     };
 
     getUsername() {
+        if(!this.currentUser.username) {
+            this.currentUser.username = storageService().get("username");
+        }
         return this.currentUser.username;
     };
 }

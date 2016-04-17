@@ -22,7 +22,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chat").withSockJS().setHeartbeatTime(2000).setDisconnectDelay(2000);
+        registry.addEndpoint("/chat").withSockJS();
     }
 
 }
