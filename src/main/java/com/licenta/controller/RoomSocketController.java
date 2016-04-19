@@ -43,6 +43,7 @@ public class RoomSocketController {
         JoinResponse response = new JoinResponse();
         response.setUsername(request.getUsername());
         response.setType("join");
+        response.setGuest(request.isGuest());
         Room room = rooms.get(request.getRoom());
         if(room == null) {
             room = new Room();
@@ -59,6 +60,12 @@ public class RoomSocketController {
         return true;
     }
 
+
+    @MessageMapping("/chat/leave")
+    public void leaveRoom(JoinRequest request) {
+        Room room = rooms.get(request.getRoom());
+        room.getParticipants().remove(request.getUsername());
+    }
 
 
     private boolean isOnlyOnlineParticipant(final Room room, final String username){

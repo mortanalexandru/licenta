@@ -5,9 +5,13 @@ var gulp = require('gulp');
 var less = require('gulp-less');
 var cssnano = require('gulp-cssnano');
 var babel = require("gulp-babel");
+var babel = require('gulp-babel');
 var browserSync = require('browser-sync').create();
+var plumber = require('gulp-plumber');
+var sourcemaps = require('gulp-sourcemaps');
+var babelOptions = require('./babelOptions');
 
-gulp.task('default',["watch", "browser-sync"]);
+gulp.task('default',["do-es6"]);
 
 gulp.task('less', function() {
     return gulp.src('/**/*.less')
@@ -16,13 +20,15 @@ gulp.task('less', function() {
         .pipe(gulp.dest('./public/css'));
 });
 
-gulp.task("babel", function () {
-    return gulp.src("/**/*.js")
-        .pipe(babel())
-        .pipe(gulp.dest("dist"));
+gulp.task('do-es6', function () {
+    return gulp.src("/webapp/**/*.js", {base: 'webapp'})
+        .pipe(plumber())
+        .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(babel(babelOptions))
+        .pipe(sourcemaps.write("/sourcemaps", {sourceRoot: '/webapp'}))
+        .pipe(gulp.dest("/webapp/dist"));
 });
-
-gulp.task("js-watch",["babel"]);
+//gulp.task("js-watch",["babel"]);
 gulp.task("less-watch",["less"],  browserSync.reload);
 
 

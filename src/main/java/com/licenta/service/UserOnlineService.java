@@ -1,5 +1,6 @@
 package com.licenta.service;
 
+import com.licenta.model.SessionUser;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class UserOnlineService {
 
     private Map<String, List<String>> userConnections = new ConcurrentHashMap<String, List<String>>();
 
-    private Map<String, List<String>> userRoomConnections = new ConcurrentHashMap<String, List<String>>();
+    private Map<String, List<SessionUser>> userRoomConnections = new ConcurrentHashMap<String, List<SessionUser>>();
 
 
     public void addUserConnection(final String username, final String sessionId) {
@@ -34,43 +35,59 @@ public class UserOnlineService {
         }
     }
 
-    public void addRoomParticipant(final String room, final String username) {
-        List<String> users;
-        if (!userRoomConnections.containsKey(room)) {
-            users = new ArrayList<String>();
-            users.add(username);
-            userRoomConnections.put(room, users);
-        } else {
-            users = userRoomConnections.get(username);
-            if (!users.contains(username)) {
-                users.add(username);
-                userRoomConnections.replace(username, users);
-            }
-        }
-    }
-
-    public void removeRoomParticipant(final String username, final String sessionId) {
-        if (userRoomConnections.containsKey(username)) {
-            List<String> users = userRoomConnections.get(username);
-            if (users.contains(sessionId)) {
-                users.remove(sessionId);
-            }
-            if (!users.isEmpty()) {
-                userRoomConnections.replace(username, users);
-            }else{
-                userRoomConnections.remove(username);
-            }
-        }
-    }
-
-    public List<String> getRoomUsers(final String roomName){
-        List<String> users;
-        if (!userRoomConnections.containsKey(roomName)) {
-            return new ArrayList<String>();
-        }else{
-            return userRoomConnections.get(roomName);
-        }
-    }
+//    public void addRoomParticipant(final String room, final String username, final String sessionId) {
+//        List<SessionUser> users;
+//        if (!userRoomConnections.containsKey(room)) {
+//            users = new ArrayList<SessionUser>();
+//            users.add(new SessionUser(username, sessionId));
+//            userRoomConnections.put(room, users);
+//        } else {
+//            boolean found = false;
+//            boolean changed = false;
+//            users = userRoomConnections.get(username);
+//            for(final SessionUser user: users){
+//                if (user.getUsername().equals(username)) {
+//                    found = true;
+//                    if(!user.getSessionId().equals(sessionId)) {
+//                        user.setSessionId(sessionId);
+//                        changed = true;
+//                    }
+//                }
+//            }
+//            if(!found){
+//                users.add(new SessionUser(username, sessionId));
+//                changed = true;
+//            }
+//            if(changed) {
+//                userRoomConnections.replace(username, users);
+//            }
+//        }
+//    }
+//
+//
+//    public void removeRoomParticipant(final String username, final String sessionId) {
+////        if (userRoomConnections.containsKey(username)) {
+////            List<String> users = userRoomConnections.get(username);
+////            if (users.contains(sessionId)) {
+////                users.remove(sessionId);
+////            }
+////            if (!users.isEmpty()) {
+////                userRoomConnections.replace(username, users);
+////            }else{
+////                userRoomConnections.remove(username);
+////            }
+////        }
+//        for(final String room: userRoomConnections.keySet())
+//    }
+//
+//    public List<String> getRoomUsers(final String roomName){
+//        List<String> users;
+//        if (!userRoomConnections.containsKey(roomName)) {
+//            return new ArrayList<String>();
+//        }else{
+//            return userRoomConnections.get(roomName);
+//        }
+//    }
 
 
 

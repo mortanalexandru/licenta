@@ -11,6 +11,8 @@ public class JoinResponse {
 
     private boolean host;
 
+    private boolean guest;
+
     public String getUsername() {
         return username;
     }
@@ -33,5 +35,13 @@ public class JoinResponse {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isGuest() {
+        return guest;
+    }
+
+    public void setGuest(boolean guest) {
+        this.guest = guest;
     }
 }

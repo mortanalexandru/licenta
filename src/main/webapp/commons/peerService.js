@@ -74,16 +74,16 @@ class PeerService {
 
     call(username){
         /*
-        this.peer.createOffer(this.offerHandler);
+        this.peer.sendOffer(this.offerHandler);
 */
-       this.peer.createOffer()
+       this.peer.sendOffer()
             .then(offer => this.offerHandler(offer, username));
     }
 
     answer(username){
         /*
         this.peer.createAnswer(function(desc){
-            this.answerHandler(desc, username)
+            this.handlerReceiveAnswer(desc, username)
         }.bind(this), this.handleError);
         */
         this.peer.createAnswer()

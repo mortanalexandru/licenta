@@ -2410,7 +2410,7 @@ Negotiator.cleanup = function(connection) {
 
 Negotiator._makeOffer = function(connection) {
   var pc = connection.pc;
-  pc.createOffer(function(offer) {
+  pc.sendOffer(function(offer) {
     util.log('Created offer.');
 
     if (!util.supports.sctp && connection.type === 'data' && connection.reliable) {
@@ -2439,7 +2439,7 @@ Negotiator._makeOffer = function(connection) {
     });
   }, function(err) {
     connection.provider.emitError('webrtc', err);
-    util.log('Failed to createOffer, ', err);
+    util.log('Failed to sendOffer, ', err);
   }, connection.options.constraints);
 }
 

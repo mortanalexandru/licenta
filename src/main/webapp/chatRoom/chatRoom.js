@@ -1,9 +1,8 @@
 import {Component, Inject, Secured} from '../ngDecorators';
 import template from './chatRoom.html!text';
-import {http, q, window, sce} from "commons/externalServices";
+import {q, window, sce} from "commons/externalServices";
 import socketService from '/commons/socketService';
 import authService from '/commons/authService';
-import userService from './userService';
 import adapter from "webrtc-adapter";
 
 
@@ -14,73 +13,71 @@ import adapter from "webrtc-adapter";
 @Inject('$scope', '$stateParams')
 class ChatRoom{
 
-
-
     constructor($scope, $stateParams) {
-        this.configuration = {
-            iceServers: [{
-                url: 'stun:23.21.150.121'
-            }
-            ]
-        };
 
         this.scope = $scope;
         this.scope.streams = {};
-        this.stateParams = $stateParams;
         this.roomName = $stateParams.roomName;
         this.scope.roomName = $stateParams.roomName;
-        this.username = authService().getUsername();
         this.peers = {};
-        this.users = [];
+        this.scope.users = [];
         this.host = false;
+        this.guest = false;
 
-        this.subscribeToParticipationRequest(this.messageHandler.bind(this));
-
+        //determine if guest or not
         if(authService().getUsername()){
-            //assign username
             this.username = authService().getUsername();
-            this.getLocalStream().then(this.handleStream.bind(this));
         }else{
-            this.username="guest";
-            //assign a random name
-            this.initParticipant();
+            this.username= this.getRandomId();
+            this.guest = true;
         }
+
+
+        socketService().connect(this.username, this.roomName).then(this.initUser.bind(this));
 
     }
 
-
-    handleReceiveIceCandidate(data){
-        console.log("got ice" + data);
-        if(this.peers[data.username]){
-            this.peers[data.username].localPeer.addIceCandidate(new RTCIceCandidate(JSON.parse(data.candidate)));
+    initUser(){
+        this.subscribeToRoom(this.messageHandler.bind(this));
+        if(this.guest){
+            this.joinRoom();
+        }else{
+            this.getLocalStream().then(this.handleLocalStream.bind(this));
         }
     }
 
-    initParticipant(){
-        this.subscribeToOffer(this.messageHandler.bind(this));
-        socketService().send("/app/chat/join",{type:"join", username:this.username, room: this.roomName});
+
+    subscribeToRoom(handler){
+        return socketService().subscribe("/message/"+this.roomName, handler);
+    }
+
+    joinRoom(){
+        this.subscribeToUsername(this.messageHandler.bind(this));
+        socketService().send("/app/chat/join",{type:"join", username:this.username, room: this.roomName, guest: this.guest});
     }
 
     getLocalStream(){
         return window().navigator.mediaDevices.getUserMedia({video:true, audio:false});
     }
 
-
-
-    handleStream(stream) {
+    handleLocalStream(stream) {
         this.localStreamObject = stream;
-        this.scope.localStream = sce().trustAsResourceUrl(window().URL.createObjectURL(stream));
         this.scope.streams[this.username] = sce().trustAsResourceUrl(window().URL.createObjectURL(stream));
         this.scope.$apply();
-        this.initParticipant();
+        this.joinRoom();
     }
 
-    subscribeToOffer(handler){
+    handleReceiveIceCandidate(data){
+        if(this.peers[data.username]){
+            this.peers[data.username].addIceCandidate(new RTCIceCandidate(JSON.parse(data.candidate)));
+        }
+    }
+
+    subscribeToUsername(handler){
         return socketService().subscribe("/message/"+this.username, handler, "handshake");
     }
 
-    receiveOffer(data){
-        console.log("got offer");
+    handleReceiveOffer(data){
         let peer = new RTCPeerConnection(this.configuration);
         let rtcSessionDesc = new RTCSessionDescription();
         rtcSessionDesc.type = "offer";
@@ -89,116 +86,109 @@ class ChatRoom{
         if(this.localStreamObject){
             peer.addStream(this.localStreamObject)
         }
-        peer.onicecandidate = function(event){this.iceCandidateLocal(event, data.username)}.bind(this)
-
-
+        peer.onicecandidate = function(event){this.sendLocalIceCandidates(event, data.username)}.bind(this)
         peer.onaddstream = function(e){this.handleRemoteStream(e, data.username)}.bind(this);
         peer.oniceconnectionstatechange = function(e){this.handlerIceConnectionChanged(e, data.username)}.bind(this);
-
-
-        this.peers[data.username] = {localPeer: peer, remotePeer: null};
-
+        this.peers[data.username] = peer;
         peer.createAnswer()
             .then(answer => this.sendAnswer(answer, data.username));
     }
 
-
     sendAnswer(desc, username){
-        console.log("creating SDP answer");
-        console.log("sdp : "+desc.sdp);
-        this.peers[username].localPeer.setLocalDescription(desc);
+        this.peers[username].setLocalDescription(desc);
         socketService().send("/app/chat/handshake", {username:this.username, type: 'answer', sdpDescription:desc.sdp, room: this.roomName, destUsername: username});
     }
 
-
-    initHost(){
-        socketService().subscribe("/message/"+this.username, this.messageHandler.bind(this));
-    }
-
-
-    subscribeToParticipationRequest(handler){
-        return socketService().subscribe("/message/"+this.roomName, handler);
-    }
-
     createAndSendOffer(response) {
-        if (!response.host && response.username != this.username){
             let peer = new RTCPeerConnection(this.configuration);
             if(this.localStreamObject) {
                 peer.addStream(this.localStreamObject)
             }
-            peer.onicecandidate = function(event){this.iceCandidateLocal(event, response.username)}.bind(this)
+            peer.onicecandidate = function(event){this.sendLocalIceCandidates(event, response.username)}.bind(this)
             peer.onaddstream = function(e){this.handleRemoteStream(e, response.username)}.bind(this);
             peer.oniceconnectionstatechange = function(e){this.handlerIceConnectionChanged(e, response.username)}.bind(this);
-
-
-            this.peers[response.username] = {localPeer: peer, remotePeer: null};
-            peer.createOffer()
-            .then(offer => this.createOffer(offer, response.username));
-        }
+            this.peers[response.username] = peer;
+           // peer.createOffer().then(offer => this.sendOffer(offer, response.username));
+            peer.createOffer(function(offer){
+                this.sendOffer(offer, response.username);
+            }.bind(this))
     }
 
+    sendOffer(desc, username){
+        this.peers[username].setLocalDescription(desc);
+        socketService().send("/app/chat/handshake", {username:this.username, type: 'offer', sdpDescription:desc.sdp, room: this.roomName, destUsername: username});
+    }
 
     handleRemoteStream(e, username) {
         this.host = true;
-        this.scope.remoteStream = sce().trustAsResourceUrl(window().URL.createObjectURL(e.stream));
         this.scope.streams[username] = sce().trustAsResourceUrl(window().URL.createObjectURL(e.stream));
         this.scope.$apply();
     }
 
     handlerIceConnectionChanged(e, username){
-        if(this.peers[username].localPeer.iceConnectionState == 'disconnected') {
+        if(this.peers[username].iceConnectionState == 'disconnected') {
             delete this.scope.streams[username];
+            this.scope.$apply();
+            socketService().send("/app/chat/leave", {type:"leave", username:username, room: this.roomName});
+            this.removeUser(username);
+        }
+    }
+
+    removeUser(user){
+        var index = this.scope.users.indexOf(user);
+        if (index >= 0) {
+            this.scope.users.splice( index, 1 );
+        }
+        this.scope.$apply();
+    }
+
+    addUser(user){
+        if(this.scope.users.indexOf(user) < 0){
+            this.scope.users.push(user);
             this.scope.$apply();
         }
     }
 
-
-    createOffer(desc, username){
-        console.log("creating SDP offer");
-        console.log("sdp : "+desc.sdp);
-        this.peers[username].localPeer.setLocalDescription(desc);
-        socketService().send("/app/chat/handshake", {username:this.username, type: 'offer', sdpDescription:desc.sdp, room: this.roomName, destUsername: username});
-    }
-
-    subscribeToAnswer(handler){
-        return socketService().subscribe("/message/"+this.username, handler);
-    }
-
-    answerHandler(data){
+    handlerReceiveAnswer(data){
         console.log("got Answer");
         let sdp = data.sdpDescription;
         console.log("sdp "+sdp);
         let rtcSessionDesc = new RTCSessionDescription();
         rtcSessionDesc.type = "answer";
         rtcSessionDesc.sdp = sdp;
-        this.peers[data.username].localPeer.setRemoteDescription(rtcSessionDesc)
+        this.peers[data.username].setRemoteDescription(rtcSessionDesc)
     }
 
-
-    subscribeToRoom(roomName, handler){
-        socketService().subscribe("/app/room", handler, "room");
-    }
-
-
-    iceCandidateLocal(event, username){
+    sendLocalIceCandidates(event, username){
         if (event.candidate) {
             socketService().send("/app/chat/ice", {type:"ice", username:this.username, candidate:JSON
                 .stringify(event.candidate), room: this.roomName, destUsername: username});
         }
     }
 
+    requestOffer(username){
+        socketService().send("/app/chat/handshake",{type:"requestOffer", username:this.username, sdpDescription:null, room: this.roomName, destUsername: username});
+    }
+
+    handleUserJoined(data){
+        if(this.guest && !data.guest){
+            this.requestOffer(data.username);
+        }
+        if (this.host && !this.guest) {
+            this.createAndSendOffer(data);
+        }
+        this.addUser(data.username);
+    }
+
     messageHandler(data){
         data = JSON.parse(data.body);
         switch (data.type) {
             case "offer":
-                this.receiveOffer(data);
+                this.handleReceiveOffer(data);
                 break;
             case "join":
                 if (data.username != this.username){
-                    this.users.push(data.username);
-                    if (this.host) {
-                        this.createAndSendOffer(data);
-                    }
+                    this.handleUserJoined(data);
                 }else{
                     this.host = data.host;
                 }
@@ -207,11 +197,24 @@ class ChatRoom{
                 this.handleReceiveIceCandidate(data);
                 break;
             case "answer":
-                this.answerHandler(data);
+                this.handlerReceiveAnswer(data);
                 break;
-
+            case "requestOffer":
+                this.addUser(data.username);
+                this.createAndSendOffer(data)
+                break;
         }
     }
+
+    getRandomId(){
+            let text = "";
+            let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            for( var i=0; i < 5; i++ ) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            return text;
+        }
+
 }
 
 export default ChatRoom;

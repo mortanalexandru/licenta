@@ -8,12 +8,11 @@ import {state} from "/commons/externalServices";
     selector: 'search',
     template: template })
 @Inject('$scope')
-class Search extends SecuredComponent{
+class Search{
 
 
     // $state.go
     constructor($scope) {
-        super();
         this.scope = $scope;
         this.message = 'This is my login component';
         //userService().getUsers().then(function(result){

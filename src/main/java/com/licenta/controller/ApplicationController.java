@@ -14,8 +14,8 @@ import java.util.List;
 @RestController
 public class ApplicationController {
 
-    @Autowired
-    private UserOnlineService onlineService;
+   // @Autowired
+   // private UserOnlineService onlineService;
 
     @RequestMapping("/user")
     public Principal user(Principal user) {
@@ -24,7 +24,8 @@ public class ApplicationController {
 
     @RequestMapping("/getRoomUsers")
     public List<String> user(final String roomName) {
-        return onlineService.getRoomUsers(roomName);
+       // return onlineService.getRoomUsers(roomName);
+        return null;
     }
 
 }

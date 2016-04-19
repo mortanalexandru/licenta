@@ -6,6 +6,7 @@
       "angular-ui-router": "github:angular-ui/ui-router@^0.2.18",
       "babel-polyfill": "npm:babel-polyfill@^6.6.0",
       "es6-store": "npm:es6-store@^0.1.2",
+      "gulp-plumber": "npm:gulp-plumber@^1.1.0",
       "sockjs-client": "npm:sockjs-client@^1.0.3",
       "stompjs": "npm:stompjs@^2.3.3",
       "text": "github:systemjs/plugin-text@^0.0.7",
@@ -23,6 +24,8 @@
     "gulp-babel": "^5.x.x",
     "gulp-cssnano": "^2.1.1",
     "gulp-less": "^3.0.5",
+    "gulp-plumber": "^1.1.0",
+    "gulp-sourcemaps": "^2.0.0-alpha",
     "lite-server": "^2.1.0"
   },
   "scripts": {

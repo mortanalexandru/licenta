@@ -14,16 +14,14 @@ class SocketService {
 
 
 
-    connect(username) {
+    connect(username, room) {
         this.username = username;
-
+        this.room = room;
         if(!this.connectingPromise){
             this.connectingPromise = q()(function (resolve, reject) {
-                console.log("inside promise");
                 this.socket = new Socket('/chat');
                 this.stompClient = Stomp.over(this.socket);
-                this.stompClient.connect({user: username}, function(){
-                    console.log("done connecting");
+                this.stompClient.connect({user: username, room: room}, function(){
                     this.connectingPromise = null;
                     this.connected = true;
                     resolve();
@@ -46,8 +44,7 @@ class SocketService {
 
     subscribe(url, handler, id) {
         if (!this.connected) {
-            this.connect(authService().getUsername()).then(function () {
-                console.log("inside subscribe then");
+            this.connect(this.username, this.room).then(function () {
                 this.username = authService().getUsername();
                 this.stompClient.subscribe(url, handler);
             }.bind(this));
@@ -58,7 +55,7 @@ class SocketService {
 
     send(path, object) {
         if (!this.connected) {
-            this.connect(authService().getUsername()).then(function () {
+            this.connect(this.username, this.room).then(function () {
                 this.stompClient.send(path, {}, JSON.stringify(object));
             }.bind(this));
         } else {
@@ -66,6 +63,9 @@ class SocketService {
         }
 
     }
+
+
+
 
 
 }

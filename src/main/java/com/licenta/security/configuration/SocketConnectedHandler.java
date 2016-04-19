@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 
 import java.security.Principal;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Created by Alexandru on 18/01/16.
@@ -26,11 +29,16 @@ public class SocketConnectedHandler implements ApplicationListener<SessionConnec
     @EventListener
     public void onApplicationEvent(SessionConnectedEvent event) {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-        String sessionId = (String) sha.getHeader("simpSessionId");
-        String username = getUsername(sha);
-        if (!userOnlineService.isSessionRegistered(username, sessionId)) {
-            userOnlineService.addUserConnection(username, sessionId);
-        }
+        GenericMessage genericMessage = (GenericMessage) sha.getHeader("simpConnectMessage");
+        Map<String, LinkedList<String>> map = (Map) genericMessage.getHeaders().get("nativeHeaders");
+        String username = map.get("user").get(0);
+        String room = map.get("room").get(0);
+        String sessionId = sha.getSessionId();
+        System.out.println("Username: "+username+" room "+room+" sessionId: "+sessionId);
+
+//        if (!userOnlineService.isSessionRegistered(username, sessionId)) {
+//            userOnlineService.addUserConnection(username, sessionId);
+//        }
     }
 
     private String getUsername(StompHeaderAccessor sha){

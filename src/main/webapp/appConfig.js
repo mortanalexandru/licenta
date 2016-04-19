@@ -8,22 +8,11 @@ app.config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $u
 
     $urlRouterProvider.otherwise('/login');
 
-    $stateProvider
-        .state('home', {
-            url: "/home",
-            template: '<home></home>'
-        });
 
     $stateProvider
         .state('login', {
             url: "/login",
             template: '<login></login>'
-        });
-
-    $stateProvider
-        .state('callPage', {
-            url: "/callPage/:destUsername",
-            template: '<videochat></videochat><textChat></textChat>'
         });
 
 
