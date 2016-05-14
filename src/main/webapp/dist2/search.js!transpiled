@@ -1,0 +1,60 @@
+(function(System, SystemJS) {(function(__moduleName){System.register(['babel-runtime/helpers/create-class', 'babel-runtime/helpers/class-call-check', '../ngDecorators', './search.html!text', '/commons/securedComponent', '/commons/componentConstants', '/commons/externalServices'], function (_export) {
+    var _createClass, _classCallCheck, Component, Inject, template, SecuredComponent, ROOM_STATE, state, Search;
+
+    return {
+        setters: [function (_babelRuntimeHelpersCreateClass) {
+            _createClass = _babelRuntimeHelpersCreateClass['default'];
+        }, function (_babelRuntimeHelpersClassCallCheck) {
+            _classCallCheck = _babelRuntimeHelpersClassCallCheck['default'];
+        }, function (_ngDecorators) {
+            Component = _ngDecorators.Component;
+            Inject = _ngDecorators.Inject;
+        }, function (_searchHtmlText) {
+            template = _searchHtmlText['default'];
+        }, function (_commonsSecuredComponent) {
+            SecuredComponent = _commonsSecuredComponent['default'];
+        }, function (_commonsComponentConstants) {
+            ROOM_STATE = _commonsComponentConstants.ROOM_STATE;
+        }, function (_commonsExternalServices) {
+            state = _commonsExternalServices.state;
+        }],
+        execute: function () {
+            'use strict';
+
+            Search = (function () {
+
+                // $state.go
+
+                function Search($scope) {
+                    _classCallCheck(this, _Search);
+
+                    this.scope = $scope;
+                    this.message = 'This is my login component';
+                    //userService().getUsers().then(function(result){
+                    //    this.scope.users = result.data;
+                    //    console.log(result);
+                    //}.bind(this));
+                }
+
+                _createClass(Search, [{
+                    key: 'createRoom',
+                    value: function createRoom(room) {
+                        state().go(ROOM_STATE, { roomName: room.name });
+                    }
+                }]);
+
+                var _Search = Search;
+                Search = Inject('$scope')(Search) || Search;
+                Search = Component({
+                    selector: 'search',
+                    template: template })(Search) || Search;
+                return Search;
+            })();
+
+            _export('default', Search);
+        }
+    };
+});
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9zZWFyY2gvc2VhcmNoLmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7eUdBVU0sTUFBTTs7Ozs7Ozs7c0NBVkosU0FBUzttQ0FBRSxNQUFNOzs7Ozs7b0RBR2pCLFVBQVU7OzZDQUNWLEtBQUs7Ozs7O0FBTVAsa0JBQU07Ozs7QUFJRyx5QkFKVCxNQUFNLENBSUksTUFBTSxFQUFFOzs7QUFDaEIsd0JBQUksQ0FBQyxLQUFLLEdBQUcsTUFBTSxDQUFDO0FBQ3BCLHdCQUFJLENBQUMsT0FBTyxHQUFHLDRCQUE0QixDQUFDOzs7OztpQkFLL0M7OzZCQVhDLE1BQU07OzJCQWFFLG9CQUFDLElBQUksRUFBQztBQUNaLDZCQUFLLEVBQUUsQ0FBQyxFQUFFLENBQUMsVUFBVSxFQUFFLEVBQUMsUUFBUSxFQUFFLElBQUksQ0FBQyxJQUFJLEVBQUMsQ0FBQyxDQUFDO3FCQUNqRDs7OzhCQWZDLE1BQU07QUFBTixzQkFBTSxHQURYLE1BQU0sQ0FBQyxRQUFRLENBQUMsQ0FDWCxNQUFNLEtBQU4sTUFBTTtBQUFOLHNCQUFNLEdBSlgsU0FBUyxDQUFDO0FBQ1AsNEJBQVEsRUFBRSxRQUFRO0FBQ2xCLDRCQUFRLEVBQUUsUUFBUSxFQUFFLENBQUMsQ0FFbkIsTUFBTSxLQUFOLE1BQU07dUJBQU4sTUFBTTs7OytCQXFCRyxNQUFNIiwiZmlsZSI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9zZWFyY2gvc2VhcmNoLmpzIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHtDb21wb25lbnQsIEluamVjdH0gZnJvbSAnLi4vbmdEZWNvcmF0b3JzJztcbmltcG9ydCB0ZW1wbGF0ZSBmcm9tICcuL3NlYXJjaC5odG1sIXRleHQnO1xuaW1wb3J0IFNlY3VyZWRDb21wb25lbnQgZnJvbSAnL2NvbW1vbnMvc2VjdXJlZENvbXBvbmVudCc7XG5pbXBvcnQge1JPT01fU1RBVEV9IGZyb20gXCIvY29tbW9ucy9jb21wb25lbnRDb25zdGFudHNcIjtcbmltcG9ydCB7c3RhdGV9IGZyb20gXCIvY29tbW9ucy9leHRlcm5hbFNlcnZpY2VzXCI7XG5cbkBDb21wb25lbnQoe1xuICAgIHNlbGVjdG9yOiAnc2VhcmNoJyxcbiAgICB0ZW1wbGF0ZTogdGVtcGxhdGUgfSlcbkBJbmplY3QoJyRzY29wZScpXG5jbGFzcyBTZWFyY2h7XG5cblxuICAgIC8vICRzdGF0ZS5nb1xuICAgIGNvbnN0cnVjdG9yKCRzY29wZSkge1xuICAgICAgICB0aGlzLnNjb3BlID0gJHNjb3BlO1xuICAgICAgICB0aGlzLm1lc3NhZ2UgPSAnVGhpcyBpcyBteSBsb2dpbiBjb21wb25lbnQnO1xuICAgICAgICAvL3VzZXJTZXJ2aWNlKCkuZ2V0VXNlcnMoKS50aGVuKGZ1bmN0aW9uKHJlc3VsdCl7XG4gICAgICAgIC8vICAgIHRoaXMuc2NvcGUudXNlcnMgPSByZXN1bHQuZGF0YTtcbiAgICAgICAgLy8gICAgY29uc29sZS5sb2cocmVzdWx0KTtcbiAgICAgICAgLy99LmJpbmQodGhpcykpO1xuICAgIH1cblxuICAgIGNyZWF0ZVJvb20ocm9vbSl7XG4gICAgICAgIHN0YXRlKCkuZ28oUk9PTV9TVEFURSwge3Jvb21OYW1lOiByb29tLm5hbWV9KTtcbiAgICB9XG5cblxuXG59XG5cbmV4cG9ydCBkZWZhdWx0IFNlYXJjaDsiXX0=
+})("http://localhost:8080/search/search.js");
+})(System, System);

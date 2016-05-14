@@ -1,0 +1,11 @@
+(function(System, SystemJS) {(function(__moduleName){System.register(["login/login", "search/search", "chatRoom/chatRoom"], function (_export) {
+  "use strict";
+
+  return {
+    setters: [function (_loginLogin) {}, function (_searchSearch) {}, function (_chatRoomChatRoom) {}],
+    execute: function () {}
+  };
+});
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvdWlDb21wb25lbnRzLmpzIiwic291cmNlc0NvbnRlbnQiOltdfQ==
+})("http://localhost:8080/uiComponents.js");
+})(System, System);

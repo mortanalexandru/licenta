@@ -86,12 +86,12 @@ class ChatRoom{
         if(this.localStreamObject){
             peer.addStream(this.localStreamObject)
         }
-        peer.onicecandidate = function(event){this.sendLocalIceCandidates(event, data.username)}.bind(this)
         peer.onaddstream = function(e){this.handleRemoteStream(e, data.username)}.bind(this);
         peer.oniceconnectionstatechange = function(e){this.handlerIceConnectionChanged(e, data.username)}.bind(this);
         this.peers[data.username] = peer;
         peer.createAnswer()
             .then(answer => this.sendAnswer(answer, data.username));
+        peer.onicecandidate = function(event){this.sendLocalIceCandidates(event, data.username)}.bind(this)
     }
 
     sendAnswer(desc, username){
@@ -104,14 +104,16 @@ class ChatRoom{
             if(this.localStreamObject) {
                 peer.addStream(this.localStreamObject)
             }
-            peer.onicecandidate = function(event){this.sendLocalIceCandidates(event, response.username)}.bind(this)
+            //peer.onicecandidate = function(event){this.sendLocalIceCandidates(event, response.username)}.bind(this)
             peer.onaddstream = function(e){this.handleRemoteStream(e, response.username)}.bind(this);
             peer.oniceconnectionstatechange = function(e){this.handlerIceConnectionChanged(e, response.username)}.bind(this);
             this.peers[response.username] = peer;
            // peer.createOffer().then(offer => this.sendOffer(offer, response.username));
             peer.createOffer(function(offer){
                 this.sendOffer(offer, response.username);
-            }.bind(this))
+            }.bind(this), function(){
+                console.log("there was an error creating the offer");
+            })
     }
 
     sendOffer(desc, username){
@@ -157,6 +159,7 @@ class ChatRoom{
         rtcSessionDesc.type = "answer";
         rtcSessionDesc.sdp = sdp;
         this.peers[data.username].setRemoteDescription(rtcSessionDesc)
+        this.peers[data.username].onicecandidate = function(event){this.sendLocalIceCandidates(event, response.username)}.bind(this);
     }
 
     sendLocalIceCandidates(event, username){

@@ -31,7 +31,7 @@ public class SocketDisconnectedHandler implements ApplicationListener<SessionDis
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = (String) sha.getHeader("simpSessionId");
         String username = getUsername(sha);
-        if (userOnlineService.isSessionRegistered(username, sessionId)) {
+        if (username != null && userOnlineService.isSessionRegistered(username, sessionId)) {
             userOnlineService.removeUserConnection(username, sessionId);
         }
     }
@@ -39,7 +39,10 @@ public class SocketDisconnectedHandler implements ApplicationListener<SessionDis
 
     private String getUsername(StompHeaderAccessor sha){
         UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) sha.getHeader("simpUser");
-        UserWrapper userWrapper = (UserWrapper) authenticationToken.getPrincipal();
-        return userWrapper.getUsername();
+        if(authenticationToken != null) {
+            UserWrapper userWrapper = (UserWrapper) authenticationToken.getPrincipal();
+            return userWrapper.getUsername();
+        }
+        return null;
     }
 }
