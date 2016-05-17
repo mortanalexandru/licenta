@@ -1,6 +1,6 @@
 import {Component, Inject, Secured} from '../ngDecorators';
 import template from './chatRoom.html!text';
-import {q, window, sce} from "commons/externalServices";
+import {q, window, sce, state} from "commons/externalServices";
 import socketService from '/commons/socketService';
 import authService from '/commons/authService';
 import adapter from "webrtc-adapter";
@@ -14,7 +14,6 @@ import adapter from "webrtc-adapter";
 class ChatRoom{
 
     constructor($scope, $stateParams) {
-
         this.scope = $scope;
         this.scope.streams = {};
         this.roomName = $stateParams.roomName;
@@ -159,7 +158,7 @@ class ChatRoom{
         rtcSessionDesc.type = "answer";
         rtcSessionDesc.sdp = sdp;
         this.peers[data.username].setRemoteDescription(rtcSessionDesc)
-        this.peers[data.username].onicecandidate = function(event){this.sendLocalIceCandidates(event, response.username)}.bind(this);
+        this.peers[data.username].onicecandidate = function(event){this.sendLocalIceCandidates(event, data.username)}.bind(this);
     }
 
     sendLocalIceCandidates(event, username){
@@ -187,6 +186,7 @@ class ChatRoom{
         data = JSON.parse(data.body);
         switch (data.type) {
             case "offer":
+                this.addUser(data.username);
                 this.handleReceiveOffer(data);
                 break;
             case "join":
@@ -200,6 +200,7 @@ class ChatRoom{
                 this.handleReceiveIceCandidate(data);
                 break;
             case "answer":
+                this.addUser(data.username);
                 this.handlerReceiveAnswer(data);
                 break;
             case "requestOffer":
@@ -215,7 +216,7 @@ class ChatRoom{
             for( var i=0; i < 5; i++ ) {
                 text += possible.charAt(Math.floor(Math.random() * possible.length));
             }
-            return text;
+            return "guest"+text;
         }
 
 }

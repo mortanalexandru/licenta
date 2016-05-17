@@ -23,6 +23,7 @@ System.config({
     "babel-polyfill": "npm:babel-polyfill@6.6.0",
     "babel-runtime": "npm:babel-runtime@5.8.35",
     "core-js": "npm:core-js@1.2.6",
+    "css": "github:systemjs/plugin-css@0.1.21",
     "es6-store": "npm:es6-store@0.1.2",
     "gulp-cssnano": "npm:gulp-cssnano@2.1.1",
     "gulp-less": "npm:gulp-less@3.0.5",

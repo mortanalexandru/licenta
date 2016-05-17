@@ -1,0 +1,3 @@
+
+<a ng-show="{{!authenticated}}" ui-sref="login({redirectState: '{{state.current.name}}', redirectParams:'{{state.params}}'})">Login</a>
+<label ng-show="{{authenticated}}">Welcome back {{username}} !</label>

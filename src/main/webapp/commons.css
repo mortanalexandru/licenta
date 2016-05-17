@@ -1,0 +1,30 @@
+/*noinspection CssUnknownTarget*/
+@import url(http://fonts.googleapis.com/css?family=Bree+Serif);
+body {
+    /* Reset */
+    background: url('/images/bg.png');
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: 300;
+    text-align: left;
+    text-decoration: none;
+    height: 500px;
+    /*******************
+    SELECTION STYLING
+    *******************/
+}
+body * {
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+}
+body ::selection {
+    color: #fff;
+    background: #f676b2;
+    /* Safari */
+}
+body ::-moz-selection {
+    color: #fff;
+    background: #f676b2;
+    /* Firefox */
+}

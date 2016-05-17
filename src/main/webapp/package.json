@@ -5,6 +5,7 @@
       "angular-local-storage": "npm:angular-local-storage@^0.2.7",
       "angular-ui-router": "github:angular-ui/ui-router@^0.2.18",
       "babel-polyfill": "npm:babel-polyfill@^6.6.0",
+      "css": "github:systemjs/plugin-css@^0.1.21",
       "es6-store": "npm:es6-store@^0.1.2",
       "gulp-plumber": "npm:gulp-plumber@^1.1.0",
       "sockjs-client": "npm:sockjs-client@^1.0.3",

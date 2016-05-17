@@ -6,12 +6,12 @@ const app = angular.module('web', ['ui.router']);
 
 app.config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise('/search');
 
 
     $stateProvider
         .state('login', {
-            url: "/login",
+            url: "/login?redirectState&redirectParams",
             template: '<login></login>'
         });
 

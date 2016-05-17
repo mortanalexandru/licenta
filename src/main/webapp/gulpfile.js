@@ -11,13 +11,12 @@ var plumber = require('gulp-plumber');
 var sourcemaps = require('gulp-sourcemaps');
 var babelOptions = require('./babelOptions');
 
-gulp.task('default',["do-es6"]);
+gulp.task('default',["less"]);
 
 gulp.task('less', function() {
     return gulp.src('/**/*.less')
         .pipe(less())
-        .pipe(cssnano())
-        .pipe(gulp.dest('./public/css'));
+        .pipe(gulp.dest('./css'));
 });
 
 gulp.task('do-es6', function () {
@@ -42,6 +41,7 @@ gulp.task('browser-sync', function() {
         proxy: "localhost:8080"
     });
 });
+
 
 
 // integrate maven gulp
