@@ -26,4 +26,22 @@
         </ul>
     </div>
 
+
+    <div xmlns:ng="http://www.w3.org/1999/xhtml">
+        <h1>Chat</h1>
+        <ul>
+            <li ng-repeat="message in messages">
+                <p>{{message.user}} : {{message.message}}</p>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <form ng-submit="$ctrl.sendMessage(message)">
+            <div class="content">
+                <input name="message" type="text" ng-model="message" placeholder="Type message"/>
+                <input type="submit" name="submit" value="Send" class="button"/>
+            </div>
+        </form>
+    </div>
+
 </div>

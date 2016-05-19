@@ -1,8 +1,27 @@
-<!--<a ui-sref="login({redirectState: '{{state.current.name}}'})">Login</a>-->
 <loginbutton></loginbutton>
 <div ng-show="{{authenticated}}">
     <form ng-submit="$ctrl.createRoom(room)">
         <input type="text" ng-model="room.name"/>
         <input type="submit" value="Create Room" />
     </form>
+    <div>
+        <span>{{error}}</span>
+    </div>
+</div>
+
+<div xmlns:ng="http://www.w3.org/1999/xhtml">
+    <h1>Rooms</h1>
+    <ul>
+        <li ng-repeat="room in rooms">
+            <div>
+                <h2>{{room.roomName}}</h2>
+                <ul>
+                    <li ng-repeat="username in room.participants">
+                        <span>{{username}}</span>
+                    </li>
+                </ul>
+                <a ui-sref="room({roomName: '{{room.roomName}}'})">Join</a>
+            </div>
+        </li>
+    </ul>
 </div>

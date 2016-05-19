@@ -74,21 +74,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /*http.formLogin()
-            .loginPage(UrlMappings.LANDING)
-            .failureUrl(UrlMappings.LANDING + "?error")
-            .loginProcessingUrl("/login")
-            .and()
-            .authorizeRequests()
-            .antMatchers(UrlMappings.LANDING,PUBLIC_RESOURCES_PATH,THIRD_PARTY_RESOURCES_PATH,UrlMappings.SOCIAL_URLS).permitAll()
-            .anyRequest().permitAll()
-            .and()
-            .logout()
-            .invalidateHttpSession(true)
-            .logoutSuccessUrl(UrlMappings.LANDING)
-            .and()
-            .csrf();
-            */
         http.httpBasic().and()
                 .authorizeRequests()
                 .antMatchers("/index.html", "/chat","/**").permitAll()

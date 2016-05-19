@@ -10,14 +10,12 @@ import './login.css!';
 @Inject('$scope', '$stateParams')
 class Login {
 
-    // $state.go
     constructor($scope, $stateParams) {
         this.scope = $scope;
         this.stateParams = $stateParams;
     }
+
     login(user){
-        console.log(user.username);
-        console.log(user.password);
         authService().login(user.username, user.password).then(function(){
             let redirectState = 'search';
             let params;
@@ -28,6 +26,8 @@ class Login {
                 params = JSON.parse(this.stateParams.redirectParams);
             }
             state().go(redirectState, params);
+        }.bind(this), function(){
+            this.scope.error = "Login failed! Please try again!";
         }.bind(this));
     }
 }

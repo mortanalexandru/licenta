@@ -22,6 +22,11 @@ class ChatRoom{
         this.scope.users = [];
         this.host = false;
         this.guest = false;
+        this.dataChannels = {};
+        this.scope.messages = [];
+
+
+        this.handleLeavePageDisconnect();
 
         //determine if guest or not
         if(authService().getUsername()){
@@ -31,9 +36,16 @@ class ChatRoom{
             this.guest = true;
         }
 
-
         socketService().connect(this.username, this.roomName).then(this.initUser.bind(this));
 
+    }
+
+
+    handleLeavePageDisconnect(){
+        this.scope.$on('$stateChangeStart', function( event, newState, newParam, oldState, oldParam ) {
+                socketService().disconnect();
+                console.log("Disconected socket");
+        }.bind(this));
     }
 
     initUser(){
@@ -88,9 +100,21 @@ class ChatRoom{
         peer.onaddstream = function(e){this.handleRemoteStream(e, data.username)}.bind(this);
         peer.oniceconnectionstatechange = function(e){this.handlerIceConnectionChanged(e, data.username)}.bind(this);
         this.peers[data.username] = peer;
+        this.dataChannels[data.username] = peer.createDataChannel("chat");
+
+        this.createDataChannel(peer, data.username);
+
         peer.createAnswer()
             .then(answer => this.sendAnswer(answer, data.username));
         peer.onicecandidate = function(event){this.sendLocalIceCandidates(event, data.username)}.bind(this)
+    }
+
+    handlerIceConnectionChanged(e, username){
+        if(this.peers[username].iceConnectionState == 'disconnected') {
+            delete this.scope.streams[username];
+            this.scope.$apply();
+            this.removeUser(username);
+        }
     }
 
     sendAnswer(desc, username){
@@ -103,10 +127,12 @@ class ChatRoom{
             if(this.localStreamObject) {
                 peer.addStream(this.localStreamObject)
             }
-            //peer.onicecandidate = function(event){this.sendLocalIceCandidates(event, response.username)}.bind(this)
             peer.onaddstream = function(e){this.handleRemoteStream(e, response.username)}.bind(this);
             peer.oniceconnectionstatechange = function(e){this.handlerIceConnectionChanged(e, response.username)}.bind(this);
             this.peers[response.username] = peer;
+
+            this.createDataChannel(peer, response.username);
+
            // peer.createOffer().then(offer => this.sendOffer(offer, response.username));
             peer.createOffer(function(offer){
                 this.sendOffer(offer, response.username);
@@ -114,6 +140,24 @@ class ChatRoom{
                 console.log("there was an error creating the offer");
             })
     }
+
+
+    createDataChannel(peer, username){
+        this.dataChannels[username] = {};
+        this.dataChannels[username].sendChannel = peer.createDataChannel("chat");
+        peer.ondatachannel = function(event){
+            this.dataChannels[username].receiveChannel =event.channel;
+            this.dataChannels[username].receiveChannel.onmessage = function (event) {
+                this.handleChatMessageReceived(username, event.data);
+            }.bind(this);
+        }.bind(this);
+    }
+
+    handleChatMessageReceived(username, message){
+        this.scope.messages.push({user: username, message: message});
+        this.scope.$apply();
+    }
+
 
     sendOffer(desc, username){
         this.peers[username].setLocalDescription(desc);
@@ -126,13 +170,11 @@ class ChatRoom{
         this.scope.$apply();
     }
 
-    handlerIceConnectionChanged(e, username){
-        if(this.peers[username].iceConnectionState == 'disconnected') {
-            delete this.scope.streams[username];
-            this.scope.$apply();
-            socketService().send("/app/chat/leave", {type:"leave", username:username, room: this.roomName});
-            this.removeUser(username);
-        }
+
+    handlerUserLeft(username){
+        delete this.scope.streams[username];
+        this.scope.$apply();
+        this.removeUser(username);
     }
 
     removeUser(user){
@@ -144,7 +186,7 @@ class ChatRoom{
     }
 
     addUser(user){
-        if(this.scope.users.indexOf(user) < 0){
+        if(this.scope.users.indexOf(user) < 0 && this.username != user){
             this.scope.users.push(user);
             this.scope.$apply();
         }
@@ -207,6 +249,17 @@ class ChatRoom{
                 this.addUser(data.username);
                 this.createAndSendOffer(data)
                 break;
+            case "userLeft":
+                this.handlerUserLeft(data.username);
+                break;
+            case "userJoined":
+                this.addUser(data.username);
+                break;
+            case "onlineUsers":
+                for(let i=0; i<data.onlineUsers.length; i++){
+                    this.addUser(data.onlineUsers[i]);
+                }
+                break;
         }
     }
 
@@ -218,6 +271,15 @@ class ChatRoom{
             }
             return "guest"+text;
         }
+
+    sendMessage(message){
+        for (let key in this.dataChannels) {
+            if (!this.dataChannels.hasOwnProperty(key)) continue;
+            this.dataChannels[key].sendChannel.send(message);
+        }
+        this.scope.messages.push({user: this.username, message: message});
+        this.scope.message = "";
+    }
 
 }
 

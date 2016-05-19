@@ -13,20 +13,18 @@ class AuthService {
     }
 
     login(username, password) {
-        return q()(function (resolve) {
-            http().get('/user',
-                {
-                    headers: {authorization: "Basic " + btoa(username + ":" + password)}
-                }).then(() => {
-                this.loginError = false;
+        return q()(function (resolve, fail) {
+            let headers =  {authorization: "Basic " + btoa(username + ":" + password)};
+
+            http().get('/user', {headers : headers}).success(function(data) {
                 this.authenticated = true;
                 this.currentUser.setCredentials(username, password);
                 storageService().save("username", username);
                 resolve();
-            }, () => {
-                this.loginError = true;
-                console.log("fail");
-            })
+            }.bind(this)).error(function() {
+                fail();
+            });
+
         }.bind(this));
     };
 
@@ -40,5 +38,11 @@ class AuthService {
         }
         return this.currentUser.username;
     };
+
+    logout() {
+        this.authenticated = false;
+        this.currentUser = new User();
+        storageService().remove("username");
+    }
 }
 export default AuthService.instance;

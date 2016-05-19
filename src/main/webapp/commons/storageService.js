@@ -6,11 +6,6 @@ import {window} from "/commons/externalServices"
 @Service({serviceName: 'storageService'})
 class StorageService {
 
-    //constructor() {
-    //    debugger;
-    //
-    //}
-
     save(key, value){
         window().sessionStorage[key] = value;
     }
@@ -18,6 +13,12 @@ class StorageService {
     get(key){
         return window().sessionStorage[key];
     }
+
+
+    remove(key){
+        return window().sessionStorage.removeItem(key);
+    }
+
 
 
 

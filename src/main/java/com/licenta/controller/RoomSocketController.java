@@ -4,9 +4,11 @@ import com.licenta.model.*;
 import com.licenta.service.UserOnlineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,48 +38,32 @@ public class RoomSocketController {
         template.convertAndSend("/message/"+ice.getDestUsername(), ice);
     }
 
-
-
     @MessageMapping("/chat/join")
     public boolean join(JoinRequest request) {
         JoinResponse response = new JoinResponse();
         response.setUsername(request.getUsername());
         response.setType("join");
         response.setGuest(request.isGuest());
-        Room room = rooms.get(request.getRoom());
-        if(room == null) {
-            room = new Room();
-            rooms.put(request.getRoom(), room);
-        }
-        if(room.getParticipants().isEmpty() || isOnlyOnlineParticipant(room, request.getUsername())){
+        if(isOnlyOnlineParticipant(request.getRoom(), request.getUsername()) && !request.isGuest()){
             response.setHost(true);
         }
-        if (!room.getParticipants().contains(request.getUsername())){
-            room.getParticipants().add(request.getUsername());
-        }
-        rooms.replace(request.getRoom(), room);
         template.convertAndSend("/message/"+request.getRoom(), response);
+        OnlineUserResponse onlineUserResponse = new OnlineUserResponse();
+        onlineUserResponse.setType("onlineUsers");
+        onlineUserResponse.setOnlineUsers(userOnlineService.getOnlineUsersForRoom(request.getRoom()));
+        template.convertAndSend("/message/"+request.getRoom(), onlineUserResponse);
         return true;
     }
 
 
-    @MessageMapping("/chat/leave")
-    public void leaveRoom(JoinRequest request) {
-        Room room = rooms.get(request.getRoom());
-        room.getParticipants().remove(request.getUsername());
-    }
-
-
-    private boolean isOnlyOnlineParticipant(final Room room, final String username){
-        for(String user: room.getParticipants()){
-            if(userOnlineService.isUserOnline(user) && !user.equals(username)){
+    private boolean isOnlyOnlineParticipant(final String room, final String username){
+        for(String user: userOnlineService.getOnlineUsersForRoom(room)){
+            if(!user.equals(username) && !user.contains("guest")){
                 return false;
             }
         }
         return true ;
     }
-
-
 
 
 }

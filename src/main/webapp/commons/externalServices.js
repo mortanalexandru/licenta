@@ -7,7 +7,8 @@ const ANGULAR_SERVICES = [
     '$state',
     '$window',
     '$sce',
-    '$q'
+    '$q',
+    '$location'
 ];
 
 const _extServices = {};
@@ -22,5 +23,6 @@ const state = () => _extServices['$state'];
 const window = () => _extServices['$window'];
 const sce = () => _extServices['$sce'];
 const q = () => _extServices['$q'];
+const location = () => _extServices['$location'];
 
-export {_, http, rootScope, state, window, sce, q}
+export {_, http, rootScope, state, window, sce, q, location}

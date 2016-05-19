@@ -31,14 +31,12 @@ public class SocketConnectedHandler implements ApplicationListener<SessionConnec
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
         GenericMessage genericMessage = (GenericMessage) sha.getHeader("simpConnectMessage");
         Map<String, LinkedList<String>> map = (Map) genericMessage.getHeaders().get("nativeHeaders");
-        String username = map.get("user").get(0);
-        String room = map.get("room").get(0);
-        String sessionId = sha.getSessionId();
-        System.out.println("Username: "+username+" room "+room+" sessionId: "+sessionId);
-
-//        if (!userOnlineService.isSessionRegistered(username, sessionId)) {
-//            userOnlineService.addUserConnection(username, sessionId);
-//        }
+        if(map.get("user") != null) {
+            String username = map.get("user").get(0);
+            String room = map.get("room").get(0);
+            String sessionId = sha.getSessionId();
+            userOnlineService.addRoomParticipant(room, username, sessionId);
+        }
     }
 
     private String getUsername(StompHeaderAccessor sha){

@@ -1,7 +1,7 @@
 import {Component, Inject} from '../ngDecorators';
 import template from './loginButton.html!text';
 import authService from '/commons/authService';
-import {state} from "commons/externalServices";
+import {state, location} from "commons/externalServices";
 import './loginButton.css!';
 
 @Component({
@@ -16,6 +16,13 @@ class LoginButton {
         this.scope.state = state();
         this.scope.username = authService().getUsername();
         this.scope.authenticated = this.scope.username != undefined;
+    }
+
+    logout(){
+        authService().logout();
+        let redirectState = 'search';
+        this.scope.authenticated = false;
+        state().reload();
     }
 }
 

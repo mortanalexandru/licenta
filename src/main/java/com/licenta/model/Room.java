@@ -8,6 +8,9 @@ import java.util.List;
  */
 public class Room {
 
+    private String roomName;
+
+
     private List<String> participants;
 
     public Room() {
@@ -24,5 +27,13 @@ public class Room {
 
     public boolean containsParticipant(final String username){
         return participants.contains(username);
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 }
