@@ -1,0 +1,95 @@
+@import url(http://fonts.googleapis.com/css?family=Bree+Serif);
+body {
+  /* Reset */
+  background: url('/src/images/bg.png');
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
+  text-align: left;
+  text-decoration: none;
+  height: 500px;
+  /*******************
+  SELECTION STYLING
+  *******************/
+}
+body * {
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+}
+body .input {
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+  background: #ffffff;
+  border-radius: 5px;
+  border: 1px solid #ffffff;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+  color: #9d9e9e;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 15px 25px;
+  text-shadow: 1px 1px 0 #ffffff;
+  width: 188px;
+}
+body .input:hover {
+  background: #dfe9ec;
+  color: #414848;
+}
+body .input:focus {
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  background: #dfe9ec;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  color: #414848;
+}
+body .button {
+  -moz-box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.75);
+  -webkit-box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.75);
+  background: #56c2e1;
+  border-radius: 5px;
+  border: 1px solid #46b3d3;
+  box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.75);
+  color: #ffffff;
+  cursor: pointer;
+  font-family: 'Bree Serif', serif;
+  font-size: 18px;
+  font-weight: 300;
+  padding: 11px 25px;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.25);
+}
+body .button:hover {
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+  background: #3f9db8;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+body .button:focus {
+  -moz-box-shadow: inset 0 1px 6px rgba(255, 255, 255, 0.75);
+  -webkit-box-shadow: inset 0 1px 6px rgba(255, 255, 255, 0.75);
+  background: #56c2e1;
+  bottom: -1px;
+  box-shadow: inset 0 1px 6px rgba(255, 255, 255, 0.75);
+  position: relative;
+}
+body .form {
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  background: #f3f3f3;
+  border-radius: 5px;
+  border: 1px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  margin: 0 auto;
+  position: relative;
+}
+body ::selection {
+  color: #fff;
+  background: #f676b2;
+  /* Safari */
+}
+body ::-moz-selection {
+  color: #fff;
+  background: #f676b2;
+  /* Firefox */
+}

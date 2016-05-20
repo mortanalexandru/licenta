@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 /**
- * {@inheritDoc}
- * Created by Norbert Felegyhazi on 3/12/2015.
+ *
  */
 public class RoleDAOImpl implements RoleDAO {
 

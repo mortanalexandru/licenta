@@ -1,0 +1,24 @@
+<loginbutton></loginbutton>
+<div class="form" ng-show="authenticated || rooms.length > 0">
+    <div class="container" ng-show="authenticated">
+        <form ng-submit="$ctrl.createRoom(room)">
+            <input type="text" ng-model="room.name" class="input"/>
+            <input type="submit" value="Create Room" class="button"/>
+        </form>
+        <div>
+            <span>{{error}}</span>
+        </div>
+    </div>
+
+    <div ng-repeat="room in rooms" class="container">
+        <div class="largeCol">
+            <h2>{{room.roomName}}</h2>
+            <ul class="list">
+                <li ng-repeat="username in room.participants">
+                    <span>{{username}}</span>
+                </li>
+            </ul>
+        </div>
+        <a ui-sref="room({roomName: '{{room.roomName}}'})" class="button smallCol">Join</a>
+    </div>
+</div>

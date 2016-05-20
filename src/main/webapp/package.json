@@ -4,7 +4,7 @@
       "angular": "github:angular/bower-angular@^1.5.0",
       "angular-local-storage": "npm:angular-local-storage@^0.2.7",
       "angular-ui-router": "github:angular-ui/ui-router@^0.2.18",
-      "babel-polyfill": "npm:babel-polyfill@^6.6.0",
+      "babel-polyfill": "npm:babel-polyfill@^6.3.14",
       "css": "github:systemjs/plugin-css@^0.1.21",
       "es6-store": "npm:es6-store@^0.1.2",
       "gulp-plumber": "npm:gulp-plumber@^1.1.0",
@@ -27,7 +27,11 @@
     "gulp-less": "^3.0.5",
     "gulp-plumber": "^1.1.0",
     "gulp-sourcemaps": "^2.0.0-alpha",
-    "lite-server": "^2.1.0"
+    "lite-server": "^2.1.0",
+    "vinyl-paths": "^2.1.0",
+    "del": "^2.1.0",
+    "babel-plugin-transform-class-properties": "^6.3.0",
+    "babel": "5.8.23"
   },
   "scripts": {
     "dev": "lite-server"

@@ -3,8 +3,6 @@ package com.licenta.security.configuration;
 
 import com.licenta.access.RoleDAO;
 import com.licenta.access.impl.RoleDAOImpl;
-import com.licenta.constants.UrlMappings;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +25,7 @@ import org.springframework.web.servlet.view.JstlView;
 @Import({SecurityContext.class, HibernateContext.class})
 public class ApplicationContext extends WebMvcConfigurerAdapter {
 
+    private final String STATIC_RESOURCES_URL = "/static/**";;
     private final String STATIC_RESOURCE_PATH = "/";
     private final String HTML_RESOURCE_PATH = "/";
     private final String HTML_EXTENSION = ".html";
@@ -37,7 +36,7 @@ public class ApplicationContext extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(UrlMappings.STATIC_RESOURCES_URL).addResourceLocations(STATIC_RESOURCE_PATH);
+        registry.addResourceHandler(STATIC_RESOURCES_URL).addResourceLocations(STATIC_RESOURCE_PATH);
     }
 
     @Override

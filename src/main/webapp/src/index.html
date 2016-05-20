@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+	<script src="/jspm_packages/system.js"></script>
+	<script src="/config.js"></script>
+
+	<div class="container">
+		<ui-view></ui-view>
+	</div>
+
+	<script>
+		System.import('/target/app').catch(console.error.bind(console));
+	</script>
+</body>
+</html>

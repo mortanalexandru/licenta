@@ -133,41 +133,4 @@ public class UserOnlineService {
         }
         return availableRooms;
     }
-
-
-
-
-    public boolean isUserOnline(final String username){
-        return userConnections.containsKey(username);
-    }
-
-    public boolean isSessionRegistered(final String username, final String sessionId){
-        if(userConnections.containsKey(username)){
-            List<String> activeSessions = userConnections.get(username);
-            if (activeSessions.contains(sessionId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void removeUserConnection(final String username, final String sessionId) {
-        if (userConnections.containsKey(username)) {
-            List<String> activeSessions = userConnections.get(username);
-            if (activeSessions.contains(sessionId)) {
-                activeSessions.remove(sessionId);
-            }
-            if (!activeSessions.isEmpty()) {
-                userConnections.replace(username, activeSessions);
-            }else{
-                userConnections.remove(username);
-            }
-        }
-    }
-
-    public Set<String> getOnlineUsernames(){
-        return userConnections.keySet();
-    }
-
-
 }

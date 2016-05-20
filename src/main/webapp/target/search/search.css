@@ -1,0 +1,24 @@
+.form {
+  width: 60%;
+}
+.form .button {
+  float: right;
+  width: 20%;
+  text-align: center;
+}
+.form .input {
+  width: 70%;
+}
+.form .largeCol {
+  width: 70%;
+  display: inline-block;
+}
+.form .smallCol {
+  width: 14%;
+}
+.form .list {
+  margin-left: 35px;
+}
+.form .container {
+  margin: 20px;
+}
