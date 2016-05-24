@@ -17,7 +17,7 @@ class ChatRoom {
         this.configuration = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
         this.scope = $scope;
         this.scope.streams = {};
-        this.roomName = $stateParams.roomName;
+        this.roomName = $stateParams.roomName || "default";
         this.scope.roomName = $stateParams.roomName;
         this.peers = {};
         this.scope.users = [];
@@ -28,8 +28,9 @@ class ChatRoom {
         this.scope.streamNumber = 0;
         this.scope.chatOpenClass = "";
 
-
-        this.handleLeavePageDisconnect();
+        if(!this.standalone){
+            this.handleLeavePageDisconnect();
+        }
 
         //determine if guest or not
         if (authService().getUsername()) {
@@ -37,6 +38,14 @@ class ChatRoom {
         } else {
             this.username = this.getRandomId();
             this.guest = true;
+        }
+        debugger;
+        if(this.standalone){
+            let username = this.getUrlParameter("username");
+            if(username != null){
+                this.username = username;
+                this.guest = false;
+            }
         }
 
         socketService().connect(this.username, this.roomName).then(this.initUser.bind(this));
@@ -361,6 +370,16 @@ class ChatRoom {
         }else{
             this.scope.chatOpenClass = "";
         }
+    }
+
+    getUrlParameter(name, url) {
+        if (!url) url = window().location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
 

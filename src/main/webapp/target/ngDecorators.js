@@ -13,11 +13,10 @@ System.register(['./appConfig', './commons/externalServices'], function (_export
 
             var componentName = description.selector;
 
-            var options = Object.assign({ controller: target }, description);
+            var options = Object.assign({ controller: target, bindings: { standalone: "<" } }, description);
 
             if (description.template) {
                 options.template = function ($element) {
-                    // all component top element will have a class with their selector on them - this is to use as css starting point in modular css approach
                     $element.addClass(componentName);
                     return description.template;
                 };

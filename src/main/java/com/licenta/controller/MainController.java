@@ -22,4 +22,14 @@ public class MainController {
         return "target/index";
     }
 
+	/**
+	 * Get method for the base page
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/page2", method = RequestMethod.GET)
+	public String getLandingPage2(final Model model) {
+		return "target/index2";
+	}
+
 }
