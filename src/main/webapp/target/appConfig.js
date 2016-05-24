@@ -27,6 +27,7 @@ System.register(['angular', 'angular-ui-router'], function (_export) {
                     url: "/room/:roomName",
                     template: '<chatroom></chatroom>'
                 });
+
                 //ui router component
             }]);
 

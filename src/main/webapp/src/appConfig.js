@@ -27,6 +27,7 @@ app.config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $u
             url: "/room/:roomName",
             template: '<chatroom></chatroom>'
         });
+
     //ui router component
 
 }]);

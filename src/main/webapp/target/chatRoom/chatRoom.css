@@ -1,0 +1,121 @@
+body .button.searchLink {
+  position: absolute;
+  top: 0;
+  left: 1%;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+body .list {
+  margin-left: 30px;
+  list-style-image: url('/src/images/srvStatusConnected.png');
+}
+body .openChatButton {
+  padding: 5px 5px;
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+}
+body .openChatButton img {
+  width: 40px;
+  height: 40px;
+}
+body .chat-container {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 20px;
+  color: #FFFFFF;
+}
+body .chat-container .userList {
+  position: relative;
+  display: block;
+}
+body .chat-container.open {
+  width: 300px;
+}
+body .chat-container .messageList {
+  height: 73%;
+}
+body .chat-container .messageList .message {
+  margin-right: 4%;
+  margin-left: auto;
+  border-top-right-radius: 0px;
+  right: 5px;
+  background: #3a3a3a;
+  width: 93%;
+  border-radius: 5px;
+  margin-top: 3px;
+  color: #a7a7a7;
+  overflow: hidden;
+  padding-bottom: 3px;
+}
+body .chat-container .messageList .message div {
+  margin: 5px;
+}
+body .chat-container .messageList .message.self {
+  margin-left: 5%;
+  margin-right: auto;
+  border-top-left-radius: 0px;
+  left: 5px;
+}
+body .chat-container .messageList .message.self .chatArrow {
+  left: 5px;
+  -moz-transform: scaleX(1);
+  -o-transform: scaleX(1);
+  -webkit-transform: scaleX(1);
+  transform: scaleX(1);
+  filter: FlipH;
+}
+body .chat-container .messageList .message .chatArrow {
+  position: absolute;
+  height: 15px;
+  right: 5px;
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: FlipH;
+  -ms-filter: "FlipH";
+}
+body .chat-container .messageForm {
+  bottom: 0px;
+  position: fixed;
+}
+body .chat-container .messageForm .content {
+  width: 300px;
+}
+body .chat-container .messageForm .content .input {
+  float: left;
+  width: 50%;
+}
+body .main.open {
+  margin-right: 300px;
+}
+body .main.open .openChatButton {
+  right: 300px;
+}
+body .videoArea {
+  margin: 5% 5%;
+}
+body .videoArea .videoContainer {
+  margin: 20px 30px;
+  display: inline-block;
+}
+body .videoArea .videoContainer video {
+  object-fit: fill;
+  width: 350px;
+  height: 350px;
+  -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%);
+  mask-image: radial-gradient(circle);
+  border-radius: 50%;
+}
+body .videoArea .videoContainer .videoUsername {
+  width: 100%;
+  text-align: center;
+}

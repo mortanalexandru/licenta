@@ -1,43 +1,40 @@
-<div>
-    <h1>{{roomName}}</h1>
+<div class="main {{chatOpenClass}}">
+    <loginbutton class="{{chatOpenClass}}"></loginbutton>
+    <a ui-sref="search" class="button searchLink">Back to search</a>
+    <div class="videoArea container{{streamNumber}}">
+        <div ng-repeat='(username, stream) in streams' class="videoContainer">
+            <div>
+                <video ng-src="{{stream}}" autoplay></video>
+                <h2 class="videoUsername">{{username}}</h2>
+            </div>
+        </div>
+    </div>
+    <button ng-click='$ctrl.toggleChat()'  class="button openChatButton">
+        <img src="/src/images/chat-icon.png"/>
+    </button>
 </div>
 
-<loginbutton></loginbutton>
-<a ui-sref="search">Back to search</a>
-<div>
-    <div xmlns:ng="http://www.w3.org/1999/xhtml">
-        <ul>
-            <li ng-repeat='(username, stream) in streams'>
-                <div>
-                    <label>{{username}}</label>
-                    <video ng-src="{{stream}}" autoplay></video>
-                </div>
-            </li>
-        </ul>
-    </div>
 
-
-    <div xmlns:ng="http://www.w3.org/1999/xhtml">
-        <h1>Connected users</h1>
-        <ul>
+<div class="chat-container {{chatOpenClass}}">
+    <div class="userList">
+        <ul class="list">
             <li ng-repeat="user in users">
                 <span>{{user}}</span>
             </li>
         </ul>
     </div>
-
-    <div class="chat-container">
-        <h1>Chat</h1>
-        <form ng-submit="$ctrl.sendMessage(message)" class="messageForm">
-            <div class="content">
-                <input name="message" class="input" type="text" ng-model="message" placeholder="Type message"/>
-                <input type="submit" name="submit" value="Send" class="button"/>
-            </div>
-        </form>
-        <p ng-repeat="message in messages" class="message">
-            <span ng-class="{self: message.self}">{{message.user}}</span>
-            <span ng-class="{self: message.self}">{{message.message}}</span>
-        </p>
+    <div class="messageList">
+        <div ng-repeat="message in messages" ng-class="{self: message.self}" class="message">
+            <img src="/src/images/chatArrow.svg" class="chatArrow">
+            <div>{{message.user}}</div>
+            <div>{{message.message}}</div>
+        </div>
     </div>
-
+    <form ng-submit="$ctrl.sendMessage(message)" class="messageForm">
+        <div class="content">
+            <input name="message" class="input" type="text" ng-model="message" placeholder="Type message"/>
+            <input type="submit" name="submit" value="Send" class="button"/>
+        </div>
+    </form>
 </div>
+

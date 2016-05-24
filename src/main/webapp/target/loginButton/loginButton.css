@@ -1,0 +1,23 @@
+loginbutton {
+  position: absolute;
+  top: 0;
+  right: 1%;
+  font-family: 'Bree Serif', serif;
+  font-size: 18px;
+  font-weight: 300;
+}
+loginbutton * {
+  display: inline-block;
+}
+loginbutton .component {
+  padding: 11px 25px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+loginbutton .button {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+loginbutton.open {
+  right: 310px;
+}

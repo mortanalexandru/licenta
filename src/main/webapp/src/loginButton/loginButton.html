@@ -1,7 +1,8 @@
 
-<a ng-show="{{!authenticated}}" ui-sref="login({redirectState: '{{state.current.name}}', redirectParams:'{{state.params}}'})" class="button">Login</a>
-<div ng-show="{{authenticated}}">
-    <label>Welcome back {{username}} !</label>
+<a ng-show="{{!authenticated}}" ui-sref="login({redirectState: '{{state.current.name}}', redirectParams:'{{state.params}}'})" class="greeting button">Login</a>
+<div ng-show="{{authenticated}}" class="greeting">
+    <div class="component">
+        <label>Welcome back, {{username}}</label>
+    </div>
     <button ng-click="$ctrl.logout()" class="button">Logout</button>
-    <span>{{error}}</span>
 </div>

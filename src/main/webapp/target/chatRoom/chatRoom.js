@@ -26,6 +26,7 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                 function ChatRoom($scope, $stateParams) {
                     babelHelpers.classCallCheck(this, _ChatRoom);
 
+                    this.configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
                     this.scope = $scope;
                     this.scope.streams = {};
                     this.roomName = $stateParams.roomName;
@@ -36,6 +37,8 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                     this.guest = false;
                     this.dataChannels = {};
                     this.scope.messages = [];
+                    this.scope.streamNumber = 0;
+                    this.scope.chatOpenClass = "";
 
                     this.handleLeavePageDisconnect();
 
@@ -77,18 +80,26 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                     key: 'joinRoom',
                     value: function joinRoom() {
                         this.subscribeToUsername(this.messageHandler.bind(this));
-                        socketService().send("/app/chat/join", { type: "join", username: this.username, room: this.roomName, guest: this.guest });
+                        socketService().send("/app/chat/join", {
+                            type: "join",
+                            username: this.username,
+                            room: this.roomName,
+                            guest: this.guest
+                        });
                     }
                 }, {
                     key: 'getLocalStream',
                     value: function getLocalStream() {
-                        return window().navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                        return window().navigator.mediaDevices.getUserMedia({
+                            video: { width: 500, height: 500 }, audio: false
+                        });
                     }
                 }, {
                     key: 'handleLocalStream',
                     value: function handleLocalStream(stream) {
                         this.localStreamObject = stream;
                         this.scope.streams[this.username] = sce().trustAsResourceUrl(window().URL.createObjectURL(stream));
+                        this.scope.streamNumber++;
                         this.scope.$apply();
                         this.joinRoom();
                     }
@@ -138,7 +149,7 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                 }, {
                     key: 'handlerIceConnectionChanged',
                     value: function handlerIceConnectionChanged(e, username) {
-                        if (this.peers[username].iceConnectionState == 'disconnected') {
+                        if (this.peers[username] && this.peers[username].iceConnectionState == 'disconnected') {
                             delete this.scope.streams[username];
                             this.scope.$apply();
                             this.removeUser(username);
@@ -148,7 +159,13 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                     key: 'sendAnswer',
                     value: function sendAnswer(desc, username) {
                         this.peers[username].setLocalDescription(desc);
-                        socketService().send("/app/chat/handshake", { username: this.username, type: 'answer', sdpDescription: desc.sdp, room: this.roomName, destUsername: username });
+                        socketService().send("/app/chat/handshake", {
+                            username: this.username,
+                            type: 'answer',
+                            sdpDescription: desc.sdp,
+                            room: this.roomName,
+                            destUsername: username
+                        });
                     }
                 }, {
                     key: 'createAndSendOffer',
@@ -189,20 +206,49 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                 }, {
                     key: 'handleChatMessageReceived',
                     value: function handleChatMessageReceived(username, message) {
-                        this.scope.messages.push({ user: username, message: message, self: false });
-                        this.scope.$apply();
+                        message = JSON.parse(message);
+                        if (!message.broadcast || this.guest) {
+                            if (!message.broadcast || !this.checkIfMessageAlreadyAdded(message.id)) {
+                                if (message.broadcast) {
+                                    username = message.username;
+                                }
+                                this.scope.messages.push({ id: message.id, user: username, message: message.message, self: false });
+                                this.scope.$apply();
+                            }
+                        }
+                        if (message.guest && !this.guest) {
+                            message.broadcast = true;
+                            this.sendMessage(message.message, true, message);
+                        }
+                    }
+                }, {
+                    key: 'checkIfMessageAlreadyAdded',
+                    value: function checkIfMessageAlreadyAdded(id) {
+                        for (var i = 0; i < this.scope.messages.length; i++) {
+                            if (this.scope.messages[i].id == id) {
+                                return true;
+                            }
+                        }
+                        return false;
                     }
                 }, {
                     key: 'sendOffer',
                     value: function sendOffer(desc, username) {
                         this.peers[username].setLocalDescription(desc);
-                        socketService().send("/app/chat/handshake", { username: this.username, type: 'offer', sdpDescription: desc.sdp, room: this.roomName, destUsername: username });
+                        socketService().send("/app/chat/handshake", {
+                            username: this.username,
+                            type: 'offer',
+                            sdpDescription: desc.sdp,
+                            room: this.roomName,
+                            destUsername: username
+                        });
                     }
                 }, {
                     key: 'handleRemoteStream',
                     value: function handleRemoteStream(e, username) {
                         this.host = true;
                         this.scope.streams[username] = sce().trustAsResourceUrl(window().URL.createObjectURL(e.stream));
+                        this.scope.streamNumber++;
                         this.scope.$apply();
                     }
                 }, {
@@ -219,6 +265,8 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                         if (index >= 0) {
                             this.scope.users.splice(index, 1);
                         }
+                        delete this.peers[user];
+                        delete this.dataChannels[user];
                         this.scope.$apply();
                     }
                 }, {
@@ -247,13 +295,21 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                     key: 'sendLocalIceCandidates',
                     value: function sendLocalIceCandidates(event, username) {
                         if (event.candidate) {
-                            socketService().send("/app/chat/ice", { type: "ice", username: this.username, candidate: JSON.stringify(event.candidate), room: this.roomName, destUsername: username });
+                            socketService().send("/app/chat/ice", {
+                                type: "ice", username: this.username, candidate: JSON.stringify(event.candidate), room: this.roomName, destUsername: username
+                            });
                         }
                     }
                 }, {
                     key: 'requestOffer',
                     value: function requestOffer(username) {
-                        socketService().send("/app/chat/handshake", { type: "requestOffer", username: this.username, sdpDescription: null, room: this.roomName, destUsername: username });
+                        socketService().send("/app/chat/handshake", {
+                            type: "requestOffer",
+                            username: this.username,
+                            sdpDescription: null,
+                            room: this.roomName,
+                            destUsername: username
+                        });
                     }
                 }, {
                     key: 'handleUserJoined',
@@ -318,13 +374,29 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                     }
                 }, {
                     key: 'sendMessage',
-                    value: function sendMessage(message) {
+                    value: function sendMessage(message, broadcast, originalMessage) {
+                        var id = this.getRandomId();
                         for (var key in this.dataChannels) {
                             if (!this.dataChannels.hasOwnProperty(key)) continue;
-                            this.dataChannels[key].sendChannel.send(message);
+                            var json = JSON.stringify(originalMessage);
+                            if (!broadcast) {
+                                json = JSON.stringify({ id: id, guest: this.guest, broadcast: false, message: message, username: this.username });
+                            }
+                            this.dataChannels[key].sendChannel.send(json);
                         }
-                        this.scope.messages.push({ user: this.username, message: message, self: true });
-                        this.scope.message = "";
+                        if (!broadcast) {
+                            this.scope.messages.push({ id: id, user: this.username, message: message, self: true });
+                            this.scope.message = "";
+                        }
+                    }
+                }, {
+                    key: 'toggleChat',
+                    value: function toggleChat() {
+                        if (this.scope.chatOpenClass == "") {
+                            this.scope.chatOpenClass = "open";
+                        } else {
+                            this.scope.chatOpenClass = "";
+                        }
                     }
                 }]);
                 var _ChatRoom = ChatRoom;
