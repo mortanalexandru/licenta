@@ -39,7 +39,7 @@ class ChatRoom {
             this.username = this.getRandomId();
             this.guest = true;
         }
-        debugger;
+
         if(this.standalone){
             let username = this.getUrlParameter("username");
             if(username != null){
