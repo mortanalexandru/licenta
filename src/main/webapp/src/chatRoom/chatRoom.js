@@ -44,7 +44,6 @@ class ChatRoom {
 
         if(this.standalone){
             let username = this.getUrlParameter("username");
-            username = username == null ? this.userId : username;
             if(username != null){
                 this.username = username;
                 this.guest = false;
