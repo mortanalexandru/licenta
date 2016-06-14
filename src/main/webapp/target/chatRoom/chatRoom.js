@@ -39,6 +39,8 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                     this.scope.messages = [];
                     this.scope.streamNumber = 0;
                     this.scope.chatOpenClass = "";
+                    this.scope.displayVideo = this.video;
+                    this.scope.displayTextChat = this.text;
 
                     if (!this.standalone) {
                         this.handleLeavePageDisconnect();
@@ -51,9 +53,10 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                         this.username = this.getRandomId();
                         this.guest = true;
                     }
-                    debugger;
+
                     if (this.standalone) {
                         var username = this.getUrlParameter("username");
+                        username = username == null ? this.userId : username;
                         if (username != null) {
                             this.username = username;
                             this.guest = false;
@@ -101,7 +104,7 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                     key: 'getLocalStream',
                     value: function getLocalStream() {
                         return window().navigator.mediaDevices.getUserMedia({
-                            video: { width: 500, height: 500 }, audio: false
+                            video: { width: 500, height: 500 }, audio: this.audio
                         });
                     }
                 }, {

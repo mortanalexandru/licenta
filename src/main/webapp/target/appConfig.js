@@ -25,7 +25,7 @@ System.register(['angular', 'angular-ui-router'], function (_export) {
 
                 $stateProvider.state('room', {
                     url: "/room/:roomName",
-                    template: '<chatroom></chatroom>'
+                    template: '<chatroom video="true" audio="false" text="true"></chatroom>'
                 });
 
                 //ui router component

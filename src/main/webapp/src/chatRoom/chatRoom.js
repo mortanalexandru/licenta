@@ -27,6 +27,8 @@ class ChatRoom {
         this.scope.messages = [];
         this.scope.streamNumber = 0;
         this.scope.chatOpenClass = "";
+        this.scope.displayVideo = this.video;
+        this.scope.displayTextChat = this.text;
 
         if(!this.standalone){
             this.handleLeavePageDisconnect();
@@ -42,10 +44,12 @@ class ChatRoom {
 
         if(this.standalone){
             let username = this.getUrlParameter("username");
+            username = username == null ? this.userId : username;
             if(username != null){
                 this.username = username;
                 this.guest = false;
             }
+
         }
 
         socketService().connect(this.username, this.roomName).then(this.initUser.bind(this));
@@ -86,7 +90,7 @@ class ChatRoom {
 
     getLocalStream() {
         return window().navigator.mediaDevices.getUserMedia({
-            video: {width: 500, height: 500}, audio: false
+            video: {width: 500, height: 500}, audio: this.audio
         });
     }
 

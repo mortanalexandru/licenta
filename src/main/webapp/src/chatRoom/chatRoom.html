@@ -1,7 +1,7 @@
 <div class="main {{chatOpenClass}}">
     <loginbutton class="{{chatOpenClass}}"></loginbutton>
     <a ui-sref="search" class="button searchLink">Back to search</a>
-    <div class="videoArea container{{streamNumber}}">
+    <div class="videoArea container{{streamNumber}}" ng-show="{{displayVideo}}">
         <div ng-repeat='(username, stream) in streams' class="videoContainer">
             <div>
                 <video ng-src="{{stream}}" autoplay></video>
@@ -9,13 +9,13 @@
             </div>
         </div>
     </div>
-    <button ng-click='$ctrl.toggleChat()'  class="button openChatButton">
+    <button ng-click='$ctrl.toggleChat()'  class="button openChatButton" ng-show="{{displayTextChat}}">
         <img src="/src/images/chat-icon.png"/>
     </button>
 </div>
 
 
-<div class="chat-container {{chatOpenClass}}">
+<div class="chat-container {{chatOpenClass}}" ng-show="{{displayTextChat}}">
     <div class="userList">
         <ul class="list">
             <li ng-repeat="user in users">

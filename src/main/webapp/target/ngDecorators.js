@@ -8,12 +8,12 @@ System.register(['./appConfig', './commons/externalServices'], function (_export
 
         return function decorator(target) {
             if (!description.selector) {
-                throw new Error('@Component() must contains selector property! ');
+                throw new Error('The selector property is missing ');
             }
 
             var componentName = description.selector;
 
-            var options = Object.assign({ controller: target, bindings: { standalone: "<" } }, description);
+            var options = Object.assign({ controller: target, bindings: { standalone: "<", video: "<", audio: "<", text: "<" } }, description);
 
             if (description.template) {
                 options.template = function ($element) {
@@ -33,7 +33,6 @@ System.register(['./appConfig', './commons/externalServices'], function (_export
         }
 
         return function decorator(target, key, descriptor) {
-            // if it's true then we inject dependencies into function and not Class constructor
             if (descriptor) {
                 var fn = descriptor.value;
                 fn.$inject = dependencies;
@@ -47,7 +46,7 @@ System.register(['./appConfig', './commons/externalServices'], function (_export
         return function decorator(target) {
             options = options ? options : {};
             if (!options.serviceName) {
-                throw new Error('@Service() must contains serviceName property!');
+                throw new Error('The service name is missing');
             }
             app.service(options.serviceName, target);
 
@@ -60,8 +59,6 @@ System.register(['./appConfig', './commons/externalServices'], function (_export
             };
         };
     }
-
-    //secure decorator, extend secure constructor (check more redirects)
 
     return {
         setters: [function (_appConfig) {

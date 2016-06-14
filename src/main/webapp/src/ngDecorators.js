@@ -4,12 +4,12 @@ import {state} from "./commons/externalServices";
 function Component(description = {}) {
     return function decorator(target) {
         if (!description.selector) {
-            throw new Error('@Component() must contains selector property! ');
+            throw new Error('The selector property is missing ');
         }
 
         const componentName = description.selector;
 
-        const options = Object.assign({ controller: target, bindings: {standalone: "<"} }, description);
+        const options = Object.assign({ controller: target, bindings: {standalone: "<", video: "<", audio: "<", text: "<"} }, description);
 
         if (description.template) {
             options.template = function($element) {
@@ -26,7 +26,6 @@ function Component(description = {}) {
 
 function Inject(...dependencies) {
     return function decorator(target, key, descriptor) {
-        // if it's true then we inject dependencies into function and not Class constructor
         if(descriptor) {
             const fn = descriptor.value;
             fn.$inject = dependencies;
@@ -42,7 +41,7 @@ function Service(options) {
     return function decorator(target) {
         options = options ? options : {};
         if (!options.serviceName) {
-            throw new Error('@Service() must contains serviceName property!');
+            throw new Error('The service name is missing');
         }
         app.service(options.serviceName, target);
 
@@ -54,7 +53,6 @@ function Service(options) {
     };
 }
 
-//secure decorator, extend secure constructor (check more redirects)
 
 
 export {Component, Inject, Service};
