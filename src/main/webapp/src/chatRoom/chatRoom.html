@@ -1,6 +1,6 @@
 <div class="main {{chatOpenClass}}">
-    <loginbutton class="{{chatOpenClass}}"></loginbutton>
-    <a ui-sref="search" class="button searchLink">Back to search</a>
+    <loginbutton ng-show="{{!standalone}}" class="{{chatOpenClass}}"></loginbutton>
+    <a ng-show="{{!standalone}}" ui-sref="search" class="button searchLink">Back to search</a>
     <div class="videoArea container{{streamNumber}}" ng-show="{{displayVideo}}">
         <div ng-repeat='(username, stream) in streams' class="videoContainer">
             <div>

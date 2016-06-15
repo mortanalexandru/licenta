@@ -41,6 +41,7 @@ System.register(['../ngDecorators', './chatRoom.html!text', '../commons/external
                     this.scope.chatOpenClass = "";
                     this.scope.displayVideo = this.video;
                     this.scope.displayTextChat = this.text;
+                    this.scope.standalone = this.standalone;
 
                     if (!this.standalone) {
                         this.handleLeavePageDisconnect();

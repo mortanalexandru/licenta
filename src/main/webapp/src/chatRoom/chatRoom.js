@@ -29,6 +29,7 @@ class ChatRoom {
         this.scope.chatOpenClass = "";
         this.scope.displayVideo = this.video;
         this.scope.displayTextChat = this.text;
+        this.scope.standalone = this.standalone;
 
         if(!this.standalone){
             this.handleLeavePageDisconnect();
